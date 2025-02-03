@@ -15,7 +15,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
     try {
         if (action === "login") {
-            const user = await prisma.user.findFirst({
+            const user = await prisma.user.findUnique({
                 where: {
                     email
                 }
@@ -38,12 +38,26 @@ export async function POST(req: NextRequest, res: NextResponse) {
             }
 
             const token = generateToken(user);
-            res.cookies.set("token", token);
-            return new NextResponse(
+            const reponse =  new NextResponse(
                 JSON.stringify({ token }),
                 {status: 200}
-            )
+            );
+            reponse.cookies.set("token", token);
+            return reponse;
         } else {
+            const signupUser = await prisma.user.findUnique({
+                where: {
+                    email
+                }
+            });
+
+            if (signupUser) {
+                return new NextResponse(
+                    JSON.stringify({ error: "User already exist. try login" }),
+                    {status: 400}
+                );
+            }
+
             const hashPass = await hashPassword(password);
             const user = await prisma.user.create({
                 data: {
@@ -55,11 +69,12 @@ export async function POST(req: NextRequest, res: NextResponse) {
             });
 
             const token = generateToken(user);
-            res.cookies.set("token", token);
-            return new NextResponse(
+            const response = new NextResponse(
                 JSON.stringify({ token }),
-                {status: 201}
-            )
+                {status: 200}
+            );
+            response.cookies.set("token", token);
+            return response;
         }
     } catch (e) {
         console.log(e);
@@ -68,10 +83,4 @@ export async function POST(req: NextRequest, res: NextResponse) {
             {status: 500}
         )
     }
-}
-
-
-
-export async function GET(req: NextRequest) { 
-return new NextResponse(JSON.stringify({ message: "Hello" }), {status: 200});
 }

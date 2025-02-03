@@ -66,7 +66,7 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b bg-white dark:bg-black">
-      <div className="w-full max-w-md px-6 py-8 border-2 border-gray-700 overflow-hidden rounded-2xl">
+      <div className="w-full max-w-md px-6 py-8 border border-gray-300 dark:border-gray-700 overflow-hidden rounded-2xl">
         <h2 className="mb-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
           Login
         </h2>
@@ -91,7 +91,7 @@ export default function Login() {
                 onAnimationEnd={() => setIsEmailShake(false)}
               />
             </div>
-            {emailError && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{emailError}</p>}
+            {emailError !== "Invalid password" && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{emailError}</p>}
           </div>
 
           <div>
@@ -116,8 +116,8 @@ export default function Login() {
                 {isShowPassword ? <FaEyeSlash className="text-gray-500" /> : <FaEye className="text-gray-500" />}
               </button>
             </div>
+            {emailError === "Invalid password" && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{emailError}</p>}
           </div>
-
           <div className="flex items-center justify-between">
             <div className="text-sm">
               <a
@@ -129,19 +129,21 @@ export default function Login() {
             </div>
           </div>
 
-          <div>
+          <div className="flex gap-4 flex-col">
             <button
               type="submit"
               disabled={!isValidForm}
               className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white outline-none ${
                 isValidForm
-                  ? "bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-blue-500"
-                  : "bg-gray-400 cursor-not-allowed"
+                  ? "bg-gradient-to-r from-blue-600 to-blue-800 cursor-pointer"
+                  : "from-gray-900 bg-gradient-to-b to-gray-800 cursor-not-allowed"
               }`}
             >
               {loader ? <Loader /> : "Login"}
             </button>
+           
           </div>
+          <span className="text-sm text-black dark:text-white">Dont have an account ? <span className="text-black dark:text-white underline cursor-pointer text-sm" onClick={() => router.push('/signup')}>Signup</span></span>
         </form>
       </div>
     </div>
