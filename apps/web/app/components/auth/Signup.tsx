@@ -27,19 +27,18 @@ export default function Signup() {
         e.preventDefault();
         try {
             setLoader(true);
-            const response = await axios.post("/api/auth", {
+            const response = await axios.post("/api/auth/signup", {
                 name: formData.name,
                 email: formData.email,
                 password: formData.password,
-                role: formData.role,
-                action: "signup",
-            });
-            if (response.status === 200) {
+                role: formData.role
+            }, { withCredentials: true });
+            if (response.status === 201) {
                 router.push("/dashboard");
             }
         } catch (e: any) {
             console.log(e);
-            setEmailError(e.response?.data?.error || "An error occurred");
+            setEmailError(e.response?.data?.message || "An error occurred");
         } finally {
             setLoader(false);
         }

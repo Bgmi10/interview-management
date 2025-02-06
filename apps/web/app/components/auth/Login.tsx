@@ -20,20 +20,19 @@ export default function Login() {
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     try {
      setLoader(true); 
-      const response = await axios.post("/api/auth", {
+      const response = await axios.post("/api/auth/signin", {
         email: formData.email,
         password: formData.password,
-        action: "login",
-      })
+      }, { withCredentials: true });
       if (response.status === 200) {
         router.push("/dashboard")
       }
     } catch (e: any) {
       console.log(e)
-      setEmailError(e.response?.data?.error || "An error occurred")
+      setEmailError(e.response?.data?.message || "An error occurred")
     } finally {
         setLoader(false);
     }
