@@ -18,19 +18,19 @@ export async function POST(req: Request) {
       });
   
       if (!user) {
-         return new Response(
-          JSON.stringify({ message: "user not found" }),
-          { status: 404 }
-         )
+        return new Response(
+         JSON.stringify({ message: "user not found" }),
+         { status: 404 }
+        )
       }
   
       const isValidPassword = await comparePassword(password, user.password);
   
       if (!isValidPassword) {
-          return new Response(
-              JSON.stringify({ message: "Invalid password" }),
-              { status: 401 }
-          )
+        return new Response(
+          JSON.stringify({ message: "Invalid password" }),
+          { status: 401 }
+        )
       }
   
       const token = generateToken(user);
@@ -45,8 +45,8 @@ export async function POST(req: Request) {
       headers.append("Set-Cookie", cookie);
   
       return new Response(
-          JSON.stringify({ message: "User authorized" }),
-          { status: 200, headers: headers }
+        JSON.stringify({ message: "User authorized" }),
+        { status: 200, headers: headers }
       )
     } catch (e) {
         console.log(e);

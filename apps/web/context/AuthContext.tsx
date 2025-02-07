@@ -1,10 +1,11 @@
 "use client";   
 import axios from "axios";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 export const AuthContext = createContext({
     user: null,
-    isauthenticated: false
+    isauthenticated: false,
+    Logout: () => {}
 });
 
 export const AuthProvider = ({ children }: { children: any }) => {
@@ -12,17 +13,18 @@ export const AuthProvider = ({ children }: { children: any }) => {
     const [user, setUser] = useState<any>(null);
     const [loader, setLoader] = useState<boolean>(false);
 
-    console.log(user);
-
     const getUser = async () => {
         setLoader(true);
         try {
-            const response = await axios.get("/api/auth", { withCredentials: true });
+            const response = await axios.get("/api/user", { withCredentials: true });
             const data = response.data;
-
+  
             if (response.status === 200) {
                 setIsAuthenticated(true);
                 setUser(data);
+            } else { 
+                setIsAuthenticated(false);
+                setUser(null);
             }
         } catch (e) {
             console.log(e); 
@@ -35,11 +37,21 @@ export const AuthProvider = ({ children }: { children: any }) => {
 
     useEffect(() => {
        getUser();
-    },[])
+    },[]);
+
+    const Logout = async() => {
+        setIsAuthenticated(false);
+        setUser(null);
+        await axios.post("/api/auth/logout", {}, { withCredentials: true });    
+    }
 
     return(
-        <AuthContext.Provider value={{ user, isauthenticated }}>
+        <AuthContext.Provider value={{ user, isauthenticated, Logout }}>
             {children}
         </AuthContext.Provider>
     )
+}
+
+export const useAuth = () => {
+    return useContext(AuthContext);
 }

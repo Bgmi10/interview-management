@@ -1,6 +1,6 @@
 
 #TODO: 
-
+date: 2/6/25
 [C] => create a folder called signup under /api/auth/ and then create a file called route.ts and inside a create a 
 post function which handles the signup request and handle db call and sign the token and set the cookie 
 
@@ -10,3 +10,9 @@ post function which handles the signup request and handle db call and sign the t
 
 [C] => edit a existing client logic based up on our signin route and handle the error cases and make sure the token is get setted in client browser
 
+  2/7/25 - 3: 15 am
+[C] => create a authmiddleware and extract the token from cookie and compare the token with secret if not valid and handle the error cases if valid allow client to access the api routes and also pass the decoded value from jwt to upcoming api routes.
+
+[C] => test the authmiddleware to make sure works and return the req.user to api routes
+
+[] => create a protected route tsx and add a
