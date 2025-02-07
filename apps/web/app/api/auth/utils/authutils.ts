@@ -19,3 +19,7 @@ export const verifyToken = (token: string) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
     return decoded;
 }
+
+export const generateRandomOtp = () => {
+    return Math.floor(Math.random() * 900000) + 100000;
+}

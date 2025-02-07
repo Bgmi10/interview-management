@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import axios from "axios";
 import { Loader } from "@/components/ui/Loader";
+import { isValidEmail } from "../../utils/Helper";
 
 export default function Signup() {
     const [isShowPassword, setIsShowPassword] = useState(false);
@@ -61,8 +62,8 @@ export default function Signup() {
         }
 
         if (name === "email") {
-            const isValidEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value);
-            setIsEmailValid(isValidEmail);
+            const validEmail = isValidEmail(value);
+            setIsEmailValid(validEmail);
             if (!isValidEmail && value !== "") {
                 setEmailError("Invalid email format");
                 setIsEmailShake(true);

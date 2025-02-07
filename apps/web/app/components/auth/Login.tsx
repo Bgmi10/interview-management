@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation"
 import { FaEye, FaEyeSlash } from "react-icons/fa6"
 import axios from "axios"
 import { Loader } from "@/components/ui/Loader"
+import Link from "next/link"
+import { isValidEmail } from "../../utils/Helper"
 
 export default function Login() {
   const [isShowPassword, setIsShowPassword] = useState(false)
@@ -43,8 +45,8 @@ export default function Login() {
     setFormData((prev) => ({ ...prev, [name]: value }))
 
     if (name === "email") {
-      const isValidEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)
-      setIsEmailValid(isValidEmail)
+      const validEmail = isValidEmail(value);
+      setIsEmailValid(validEmail);
       if (!isValidEmail && value !== "") {
         setEmailError("Invalid email format")
         setIsEmailShake(true)
@@ -119,12 +121,12 @@ export default function Login() {
           </div>
           <div className="flex items-center justify-between">
             <div className="text-sm">
-              <a
-                href="#"
+              <Link
+                href="/forgetpassword"
                 className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
               >
-                Forgot your password?
-              </a>
+                Forgot password?
+              </Link>
             </div>
           </div>
 
