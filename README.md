@@ -17,8 +17,6 @@ post function which handles the signup request and handle db call and sign the t
 
 [C] => create a protected route tsx
 
-[] => create a /homepage and once the user login or signup redirect them to /homepage and on home page use a header and implement a conditional render for both recruiter and candidate and dont use a landing page try to use a fresh open page on /homepage
-
 [C] => create a /forget-password page and make a form with fields like email, submit button validate the email.
 
 [C] => create a backend point called forgetpassword under /api/auth and then create post route and then get the email from the query("email) then generate a 6 digit random number must be unique.
@@ -29,4 +27,6 @@ post function which handles the signup request and handle db call and sign the t
 
 [C] => create a endpoint called /verify-otp under /api/auth to verify the otp. it will take the otp, new password, email as req.body and then once the otp matches then we should the update user password 
 
-[] => check the flow of forget password from client manually 
+[C] => check the flow of forget password from client manually 
+
+[] => create a /homepage and once the user login or signup redirect them to /homepage and on home page use a header and implement a conditional render for both recruiter and candidate and dont use a landing page try to use a fresh open page on /homepage

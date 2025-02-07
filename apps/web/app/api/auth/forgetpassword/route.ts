@@ -26,7 +26,7 @@ export async function POST (req: Request) {
     console.log(otp);
     //const success = await SenOtpEmail();
 
-    const expTime = new Date(Date.now() + 5 * 60 * 1000);
+    const expTime = new Date(Date.now() + 1 * 60 * 1000);
 
     try {
        const hashedOtp = await  hashPassword(otp.toString());
