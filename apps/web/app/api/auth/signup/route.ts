@@ -3,9 +3,9 @@ import { generateToken, hashPassword } from "../utils/authutils";
 import { serialize } from "cookie"; 
 
 export async function POST(req: Request) {
-    const { name, email, password, role }: { name: string; email: string; password: string; role?: string } = await req.json();
+    const { firstName, email, password, role }: { firstName: string; email: string; password: string; role?: string } = await req.json();
     
-    if (!name || !email || !password) {
+    if (!firstName || !email || !password) {
         return new Response(
             JSON.stringify({
                 message: "Invalid body"
@@ -32,7 +32,8 @@ export async function POST(req: Request) {
       
       const createdUser = await prisma.user.create({
         data: {
-            name,
+            firstName,
+            lastName: "",
             email,
             password: hashPass,
             role: role === "candidate" ? "Candidate" : "Recruiter"
@@ -45,7 +46,7 @@ export async function POST(req: Request) {
         httpOnly: false,
         path: "/",
         sameSite: "lax",
-        maxAge: 60 * 60
+        maxAge: 60 * 60 * 60
       });
 
       const headers = new Headers();

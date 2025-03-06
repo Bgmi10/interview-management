@@ -6,7 +6,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa6"
 import axios from "axios"
 import { Loader } from "@/components/ui/Loader"
 import Link from "next/link"
-import { isValidEmail } from "../../utils/Helper"
+import { isValidEmail } from "../../../src/utils/Helper"
 
 export default function Login() {
   const [isShowPassword, setIsShowPassword] = useState(false)
@@ -67,7 +67,7 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b bg-white dark:bg-black">
-      <div className="w-full max-w-md px-6 py-8 border border-gray-300 dark:border-gray-700 overflow-hidden rounded-2xl">
+      <div className="w-full mt-20 max-w-md px-6 py-8 border border-gray-300 dark:border-gray-700 overflow-hidden rounded-2xl">
         <h2 className="mb-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
           Login
         </h2>

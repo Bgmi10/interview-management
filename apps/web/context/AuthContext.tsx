@@ -1,27 +1,34 @@
 "use client";   
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
 
 export const AuthContext = createContext({
     user: null,
     isauthenticated: false,
-    Logout: () => {}
-});
+    Logout: () => {},
+    getUser: () => {},
+    profileCompletion: 0,
+    setUser: (user: any) => {}
+})
 
 export const AuthProvider = ({ children }: { children: any }) => {
     const [isauthenticated, setIsAuthenticated] = useState<boolean>(false);
-    const [user, setUser] = useState<any>(null);
+    const [user, setUser] = useState<any | null>(null);
     const [loader, setLoader] = useState<boolean>(false);
+    const navigate = useRouter();
+    const [profileCompletion, setProfileCompletion] = useState<number>(0);
 
     const getUser = async () => {
         setLoader(true);
         try {
             const response = await axios.get("/api/user", { withCredentials: true });
-            const data = response.data;
+            const data: any = response.data;
   
             if (response.status === 200) {
                 setIsAuthenticated(true);
-                setUser(data);
+                setUser(data?.data);
+                setProfileCompletion(data?.profileCompletion);
             } else { 
                 setIsAuthenticated(false);
                 setUser(null);
@@ -42,11 +49,15 @@ export const AuthProvider = ({ children }: { children: any }) => {
     const Logout = async() => {
         setIsAuthenticated(false);
         setUser(null);
-        await axios.post("/api/auth/logout", {}, { withCredentials: true });    
+        const response = await axios.post("/api/auth/logout", {}, { withCredentials: true });    
+
+        if (response.status === 200) {
+            navigate.push("/login");
+        }
     }
 
     return(
-        <AuthContext.Provider value={{ user, isauthenticated, Logout }}>
+        <AuthContext.Provider value={{ user, isauthenticated, Logout, getUser, profileCompletion, setUser }}>
             {children}
         </AuthContext.Provider>
     )

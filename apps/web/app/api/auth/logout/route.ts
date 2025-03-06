@@ -1,6 +1,6 @@
 import { serialize } from "cookie";
 
-export function GET () {
+export function POST () {
     try{
       const cookie = serialize("token", "", {
         httpOnly: true,

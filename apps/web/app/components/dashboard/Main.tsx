@@ -1,15 +1,13 @@
-import axios from "axios";
+"use client"
 
-export default async function Main() {
-    const data: any = await axios.get('https://dummyjson.com/products')
+import { useContext } from "react";
+import { AuthContext } from "../../../context/AuthContext";
 
+export default function Main() {
+    const { user } = useContext(AuthContext);
     return (
         <div>
-            { data.data.products.map((item: any) => (
-                <div key={item.id} className="text-black">
-                 { item.title }
-                </div>
-            ))}
-        </div>
+
+        </div>   
     )
 }

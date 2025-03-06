@@ -15,8 +15,16 @@ export const generateToken = (user: any) => {
     return token;
 }
 
-export const verifyToken = (token: string) => {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
+export const verifyToken = (cookies: any) => {
+    const token = cookies.get("token");
+    if (!token) {
+        return new Response(
+            JSON.stringify({ message: "Invalid Token" }),
+            { status: 400 }
+        )
+    };
+
+    const decoded = jwt.verify(token.value, process.env.JWT_SECRET as string);
     return decoded;
 }
 

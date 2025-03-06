@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "../context/ThemeContext";
 import { AuthContext, AuthProvider } from "../context/AuthContext";
 import "./lib/cronJobs";
+import Header from "./components/header/Header";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -29,6 +30,7 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
       <AuthProvider>
         <ThemeProvider>
+        <Header />
          {children}
         </ThemeProvider>
       </AuthProvider>

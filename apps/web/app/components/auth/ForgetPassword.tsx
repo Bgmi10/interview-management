@@ -2,9 +2,9 @@
 
 import { type FormEvent, useState, useEffect } from "react"
 import { FaArrowLeft } from "react-icons/fa6"
-import { isValidEmail } from "../../utils/Helper"
+import { isValidEmail } from "../../../src/utils/Helper"
 import axios from "axios"
-import { getTimeRemaining } from "../../utils/timer"
+import { getTimeRemaining } from "../../../src/utils/timer"
 import { useRouter } from "next/navigation"
 
 export default function ForgetPassword() {
@@ -51,7 +51,7 @@ export default function ForgetPassword() {
     }
 
     try {
-      const response = await axios.post(`/api/auth/forgetpassword`, { email: email })
+      const response: any = await axios.post(`/api/auth/forgetpassword`, { email: email })
       setError(response.data.message)
       if (response.status === 200) {
         setIsShowOtpForm(true)
@@ -69,7 +69,7 @@ export default function ForgetPassword() {
     if (!isShowOtpForm) return
 
     try {
-      const response = await axios.post("/api/auth/verify-otp", { otp: userOtp, email, newpassword: newPassword })
+      const response: any = await axios.post("/api/auth/verify-otp", { otp: userOtp, email, newpassword: newPassword })
       setError(response.data.message)
       if (response.status === 200) {
         setError(response.data.message)
@@ -90,7 +90,7 @@ export default function ForgetPassword() {
         <form onSubmit={handleSubmit} className="border border-gray-600 flex flex-col p-10 rounded-2xl gap-3 w-96">
           <div className="flex items-center mb-4">
             <FaArrowLeft className="text-gray-400 cursor-pointer" onClick={() => window.history.back()} />
-            <h2 className="text-2xl font-bold text-center flex-grow text-gray-200">Forgot Password</h2>
+            <h2 className="text-2xl font-bold text-center flex-grow dark:text-gray-200 text-gray-900">Forgot Password</h2>
           </div>
           <input
             type="text"
@@ -128,7 +128,7 @@ export default function ForgetPassword() {
                 type="number"
                 maxLength={1}
                 className="rounded-lg text-center dark:text-white text-black p-3 border-gray-600 border h-12 w-12 bg-gray-100 dark:bg-gray-800"
-                onKeyUp={(e) => {
+                onKeyUp={(e: any) => {
                     if (e === "-" || "+" || "." || "e") {
                         e.preventDefault();
                     }
