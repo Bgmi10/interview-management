@@ -38,6 +38,13 @@ post function which handles the signup request and handle db call and sign the t
 
 [] => setup the s3 config to our project use a hanible account 
 
+[C] => POST   /api/recruiter/jobs        # Create a new job
+[C] => PUT    /api/recruiter/jobs/:id    # Update a job
+[C] => DELETE /api/recruiter/jobs/:id    # Delete a job
+[C] => GET    /api/recruiter/jobs        # Get all jobs posted by the recruiter
+[C] => GET    /api/recruiter/jobs/:id    # Get details of a specific job
+
+
 
 im building a project called interview management system and over there we used build role based access and also we are a team like three people one was developer who use to develop the full stack in next js prisma, postgres, and one who design ui and ux and then one who built the schema of db in postgres now i have to presant ppt today so, we need a explaintion to the project overvies and slide ppt content ill list the features we have and rest not finsihed so, landing page done, authentication done using jwt and forget password with email otp done and done schema for user like we have currently three roles one is for admin, candidate , recruiter these we have this schema and also rest feature like dashboard for admin would controll the flow and also for candiate we have features like create a profile, add up more on details , search jobs, apply jobs, notice message, profile management, candidate can send the message to reructier once the reqest accepted by recruiter like linkdin and then we have feature for recruiter like post jobs, edit jobs, can have a action page to view all applied candidates where it would be leaderboard and we will rank up based on experenience and skills like a matching query and also hr can view profile and directly hit the message and we have service like scheduling interview using g calender and then after interview both perties can feedback thiss was the flow i need a ppt and each roles details to explain and also research paper we are using nextjs , next js api routs, tailwind, prisma, postgres, docker, ses service from aws and hosting we are going with aws ec2, real time chat we are using firebase , s3 + cloudfront to deploy a frontend thats the flow 
 

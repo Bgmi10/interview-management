@@ -15,7 +15,7 @@ const s3 = new S3Client({
 export async function POST (req: NextRequest) {
  try {
     const { fileName, fileType } = await req.json();
-
+    
     if (!fileName || !fileType) {
         return Response.json({ error: "Filename and filetype are required" }, { status: 400 });
     }

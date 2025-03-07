@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { S3Client, DeleteObjectCommand } from "@aws-sdk/client-s3";
+import { verifyToken } from "../auth/utils/authutils";
 
 const s3 = new S3Client({
     region: process.env.AWS_REGION, 
@@ -12,7 +13,7 @@ const s3 = new S3Client({
 export async function POST(req: Request) {
     try {
         const { fileKey } = await req.json();
-       console.log(fileKey);
+
         if (!fileKey) {
             return NextResponse.json({ message: "File key is required" }, { status: 400 });
         }

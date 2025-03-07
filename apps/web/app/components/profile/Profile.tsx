@@ -62,26 +62,24 @@ export default function Profile() {
   const [skillInput, setSkillInput] = useState("")
   const [notification, setNotification] = useState({ show: false, message: "", type: "" })
    
-useEffect(() => {
-    setFormData({ ...formData, ...user })
-}, [user])
-  
+  useEffect(() => {
+      setFormData({ ...formData, ...user })
+  }, [user])
+    console.log(formData)
+
   const handleProfilePicUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     try {
       if (e.target.files && e.target.files[0]) {
-        const file = e.target.files[0]
-
-        setResumeLoader(true);
-        if (user?.profilePic) {
-          const fileKey = user.profilePic.split("/").pop()
+        const file = e.target.files[0];
+        
+         if (formData.profilePic) {
+          const fileKey = user?.profilePic.split("/").pop()
           await axios.post("/api/delete-file", { fileKey })
         }
 
-        // Upload new file
         const uploadedUrl = await uploadToS3(file)
         setFormData((prev) => ({ ...prev, profilePic: uploadedUrl }))
 
-        setResumeLoader(false);
         setNotification({
           show: true,
           message: "Profile picture updated successfully!",
@@ -103,20 +101,21 @@ useEffect(() => {
 
   const handleResumeUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     try {
+        
       if (e.target.files && e.target.files[0]) {
         const file = e.target.files[0]
-
+        setResumeLoader(true);
         // Delete old file if exists
         if (user?.resume) {
           const fileKey = user.resume.split("/").pop()
-          await axios.post("/api/delete-file", { fileKey })
+          await axios.post("/api/delete-file", { fileKey }, { withCredentials: true })
         }
 
         // Upload new file
         const uploadedUrl = await uploadToS3(file)
         setFormData((prev) => ({ ...prev, resume: uploadedUrl }))
 
-        // Show notification
+        setResumeLoader(false);
         setNotification({
           show: true,
           message: "Resume updated successfully!",
