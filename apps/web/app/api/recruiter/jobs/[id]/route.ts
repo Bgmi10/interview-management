@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import { prisma } from "db";
 
-export async function PUT(req: Request, context: { params: { id: string }}) {
+export async function PUT(req: Request, context: any) {
     const { id } = context.params;
 
-    const { title, description, companyName, location, salary, jobType } = await req.json();
+    const { title, description, companyName, location, salary, jobType, status, companyLogo, education, experience, industryType, preferredSkills, requriedSkills, qualifications, role, responsibilities } = await req.json();
 
     if (!id) {
         return NextResponse.json({ messag: "Missing job id" }, { status: 400 });
@@ -20,7 +20,17 @@ export async function PUT(req: Request, context: { params: { id: string }}) {
               companyName,
               location,
               salary,
-              jobType
+              jobType,
+              status,
+              companyLogo,
+              education,
+              experience,
+              industryType,
+              preferredSkills,
+              qualifications,
+              requriedSkills,
+              responsibilities,
+              role,
             }
         })
 
@@ -32,7 +42,7 @@ export async function PUT(req: Request, context: { params: { id: string }}) {
     }   
 }
 
-export async function DELETE(req: Request, context: { params: { id: string }}) {
+export async function DELETE(req: Request, context: any) {
 
     const { id } = context.params;
 
@@ -53,7 +63,7 @@ export async function DELETE(req: Request, context: { params: { id: string }}) {
     
 }
 
-export async function GET (req: Request, context: { params: { id: string }}) {
+export async function GET (req: Request, context: any) {
    const { id } = context.params;
 
    if (!id) {

@@ -9,7 +9,7 @@ datasource db {
     id                   Int              @id @default(autoincrement())
     firstName            String              
     lastName             String?          @default("")
-    phoneNumber          String?          @unique
+    phoneNumber          String?        
     profilePic           String?          @default("")
     companyName          String?          @default("")
     companyWebsiteUrl    String?          @default("")
@@ -43,18 +43,28 @@ model JobApplication {
   appliedAt   DateTime  @default(now())
 }
 model JobPost {
-  id           Int       @id @default(autoincrement())
-  title        String
-  description  String
-  companyName  String
-  location     String 
-  salary       String
-  jobType      String
-  postedAt     DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  recruiter    User      @relation("RecruiterJobPosts", fields: [recruiterId], references: [id])
-  recruiterId  Int
-  applications JobApplication[] 
+  id                       Int           @id @default(autoincrement())
+  title                    String
+  description              String
+  companyName              String
+  location                 String 
+  salary                   String
+  jobType                  JobTypeEnum
+  postedAt                 DateTime      @default(now())
+  updatedAt                DateTime      @updatedAt
+  recruiter                User          @relation("RecruiterJobPosts", fields: [recruiterId], references: [id])
+  recruiterId              Int    
+  companyLogo              String? 
+  role                     String
+  industryType             String
+  responsibilities         String[]
+  requriedSkills           String[]
+  preferredSkills          String[]
+  qualifications           String[]
+  education                String[]
+  experience               String?
+  applications             JobApplication[] 
+  status                   JobPostEnum
 }
 model FeedBack {
   id           Int    @id @default(autoincrement())
@@ -92,4 +102,18 @@ enum JobStatusEnum {
 enum Role {
   Candidate
   Recruiter
+}
+
+enum JobPostEnum {
+  Active
+  Inactive
+}
+
+enum JobTypeEnum {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+  REMOTE
+  INTERNSHIP
+  FREELANCE
 }

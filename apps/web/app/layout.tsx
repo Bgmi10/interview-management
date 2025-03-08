@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { ThemeProvider } from "../context/ThemeContext";
-import { AuthContext, AuthProvider } from "../context/AuthContext";
+import { AuthProvider } from "../context/AuthContext";
 import "./lib/cronJobs";
 import Header from "./components/header/Header";
 
@@ -30,8 +30,8 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
       <AuthProvider>
         <ThemeProvider>
-        <Header />
-         {children}
+          <Header />
+           {children}
         </ThemeProvider>
       </AuthProvider>
       </body>

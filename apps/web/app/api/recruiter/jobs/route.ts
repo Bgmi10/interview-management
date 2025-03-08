@@ -4,9 +4,9 @@ import { verifyToken } from "../../auth/utils/authutils";
 import { User } from "../../types/user";
 
 export async function POST (req: Request) {
-    const {title, description, companyName, location, salary, jobType  } = await req.json();
+    const { title, description, companyName, location, salary, jobType, companyLogo, role, industryType, responsibilities, requriedSkills, preferredSkills, qualifications, education, experience } = await req.json();
 
-    if (!title || !description || !companyName || !location || !salary || !jobType) {
+    if (!title || !description || !companyName || !location || !salary || !jobType || !role || !industryType || !responsibilities || !requriedSkills || !qualifications || !education || !experience) {
         return NextResponse.json({ message: "missing body" }, { status: 400 });
     }
     //@ts-ignore
@@ -14,8 +14,12 @@ export async function POST (req: Request) {
 
     const user = verifyToken(cookies) as User;
 
+    if (user?.role === "Candidate") {
+        return NextResponse.json({ message: "Access Denied" }, { status: 400 })
+    }
+
     try{
-        await prisma.jobPost.create({ 
+        const createdJob = await prisma.jobPost.create({ 
             data: {
                 title,
                 description,
@@ -24,11 +28,21 @@ export async function POST (req: Request) {
                 salary,
                 jobType,
                 recruiterId: user?.id,
-                postedAt: new Date()
+                postedAt: new Date(),
+                preferredSkills,
+                qualifications,
+                responsibilities,
+                requriedSkills,
+                companyLogo,
+                role,
+                education,
+                experience,
+                industryType,
+                status: "Active"
             }
         });
 
-        return NextResponse.json({ message: "job created success" }, { status: 201 })
+        return NextResponse.json({ message: "job created success", data: createdJob }, { status: 201 })
     } catch (e) {
         console.log(e);
         return NextResponse.json({ message: "error while creating job" }, { status: 500 })
@@ -42,7 +56,19 @@ export async function GET (req: Request) {
 
     try {
         const jobs = await prisma.jobPost.findMany({
-            where: { recruiterId: user?.id }
+            where: { recruiterId: user?.id },
+            select: {
+                id: true,
+                title: true,
+                companyName: true,
+                companyLogo: true,
+                salary: true,
+                jobType: true,
+                postedAt: true,
+                applications: true,
+                location: true,
+                description: true
+            }
         })
         return NextResponse.json(jobs, { status: 200 });
     } catch (e) {

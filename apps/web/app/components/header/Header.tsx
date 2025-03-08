@@ -274,7 +274,9 @@ const Header = () => {
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                                 className="rounded-lg lg:px-4 lg:py-2 cursor-pointer text-white bg-gradient-to-r from-red-600 to-red-800 hover:from-red-500 hover:to-red-700 transition-all duration-300 ease-in-out"
-                                onClick={Logout}
+                                onClick={() => {
+                                    setIsMenuOpen(false)
+                                    Logout}}
                             >
                               <span className="lg:text-text text-sm font-semibold">Logout</span>
                             </motion.button>

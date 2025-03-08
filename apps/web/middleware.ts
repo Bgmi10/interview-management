@@ -19,6 +19,6 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/user", "/profile", "/dashboard", "/settings", "/login", "/signup", "/api/auth/logout", "/setup", "/api/upload", "/api/delete-file"],
+  matcher: ["/user", "/profile", "/dashboard/recruiter", "/settings", "/login", "/signup", "/api/auth/logout", "/setup", "/api/upload", "/api/delete-file", "/api/recruiter/jobs", "/api/recruiter/jobs/:id"],
 };
     

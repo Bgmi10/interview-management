@@ -71,7 +71,11 @@ export async function GET(req: Request) {
                             companyName: true,
                             experience: true,
                             industry: true,
-                            jobPosts: true,
+                            jobPosts: {
+                                include: {
+                                    applications: true,
+                                }
+                            },
                             companyWebsiteUrl: true,
                         },
                     });
@@ -155,7 +159,7 @@ export async function PUT(req: Request) {
           skills,
           collageName,
           experience,
-          companyWebsiteUrl
+          companyWebsiteUrl,
         }
       });
       

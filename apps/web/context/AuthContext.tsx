@@ -1,4 +1,5 @@
 "use client";   
+import { baseUrl } from "@/utils/constants";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
@@ -9,7 +10,9 @@ export const AuthContext = createContext({
     Logout: () => {},
     getUser: () => {},
     profileCompletion: 0,
-    setUser: (user: any) => {}
+    setUser: (user: any) => {},
+    loader: false,
+    updateUser: (user: any) => {}
 })
 
 export const AuthProvider = ({ children }: { children: any }) => {
@@ -18,7 +21,7 @@ export const AuthProvider = ({ children }: { children: any }) => {
     const [loader, setLoader] = useState<boolean>(false);
     const navigate = useRouter();
     const [profileCompletion, setProfileCompletion] = useState<number>(0);
-
+    
     const getUser = async () => {
         setLoader(true);
         try {
@@ -56,8 +59,14 @@ export const AuthProvider = ({ children }: { children: any }) => {
         }
     }
 
+    
+    const updateUser = async (data: any) => {
+        const res = await axios.put(baseUrl + "/api/user", { data }, { withCredentials: true });
+        return res.data;
+    }
+    
     return(
-        <AuthContext.Provider value={{ user, isauthenticated, Logout, getUser, profileCompletion, setUser }}>
+        <AuthContext.Provider value={{ user, isauthenticated, Logout, getUser, profileCompletion, setUser, loader, updateUser }}>
             {children}
         </AuthContext.Provider>
     )

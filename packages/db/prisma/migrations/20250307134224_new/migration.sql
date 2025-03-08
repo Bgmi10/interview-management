@@ -7,30 +7,36 @@ CREATE TYPE "JobStatusEnum" AS ENUM ('Pending', 'Accepted', 'Rejected');
 -- CreateEnum
 CREATE TYPE "Role" AS ENUM ('Candidate', 'Recruiter');
 
+-- CreateEnum
+CREATE TYPE "JobPostEnum" AS ENUM ('Active', 'Inactive');
+
+-- CreateEnum
+CREATE TYPE "JobTypeEnum" AS ENUM ('FULL_TIME', 'PART_TIME', 'CONTRACT', 'REMOTE', 'INTERNSHIP', 'FREELANCE');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
-    "firstName" TEXT,
-    "lastName" TEXT,
+    "firstName" TEXT NOT NULL,
+    "lastName" TEXT DEFAULT '',
     "phoneNumber" TEXT,
-    "profilePic" TEXT,
-    "companyName" TEXT,
-    "companyWebsiteUrl" TEXT,
-    "companyLocation" TEXT,
-    "companyLogo" TEXT,
-    "industry" "IndustryEnum",
+    "profilePic" TEXT DEFAULT '',
+    "companyName" TEXT DEFAULT '',
+    "companyWebsiteUrl" TEXT DEFAULT '',
+    "companyLocation" TEXT DEFAULT '',
+    "companyLogo" TEXT DEFAULT '',
+    "industry" "IndustryEnum" DEFAULT 'Others',
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "role" "Role" NOT NULL,
-    "linkedIn" TEXT,
+    "linkedIn" TEXT DEFAULT '',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "resume" TEXT,
-    "portfolioUrl" TEXT,
+    "resume" TEXT DEFAULT '',
+    "portfolioUrl" TEXT DEFAULT '',
     "skills" TEXT[] DEFAULT ARRAY[]::TEXT[],
-    "experience" TEXT,
-    "collageName" TEXT,
-    "specilization" TEXT,
+    "experience" TEXT DEFAULT '',
+    "collageName" TEXT DEFAULT '',
+    "specilization" TEXT DEFAULT '',
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -54,10 +60,20 @@ CREATE TABLE "JobPost" (
     "companyName" TEXT NOT NULL,
     "location" TEXT NOT NULL,
     "salary" TEXT NOT NULL,
-    "jobType" TEXT NOT NULL,
+    "jobType" "JobTypeEnum" NOT NULL,
     "postedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "recruiterId" INTEGER NOT NULL,
+    "companyLogo" TEXT,
+    "role" TEXT NOT NULL,
+    "industryType" TEXT NOT NULL,
+    "responsibilities" TEXT[],
+    "requriedSkills" TEXT[],
+    "preferredSkills" TEXT[],
+    "qualifications" TEXT[],
+    "education" TEXT[],
+    "experience" TEXT,
+    "status" "JobPostEnum" NOT NULL,
 
     CONSTRAINT "JobPost_pkey" PRIMARY KEY ("id")
 );

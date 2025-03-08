@@ -1,9 +1,9 @@
 "use client";
 
-import { useContext, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import axios from "axios";
-import { AuthContext, useAuth } from "../../../context/AuthContext"
+import { useAuth } from "../../../context/AuthContext"
 import { MdEdit } from "react-icons/md";
 import { FaSearchengin } from "react-icons/fa6";
 import ResumeUpload from "./ResumeUpload";
@@ -158,7 +158,7 @@ export default function Setup() {
             );
 
             if (response.status === 200) {
-                navigate.push("/dashboard");
+                navigate.push("/dashboard/recruiter");
             }
         } catch (error) {
             console.error("❌ Error uploading files:", error);

@@ -1,0 +1,23 @@
+import CreateJob from "../../../components/recruiter/CreateJob";
+
+export default function () {
+    return(
+       <CreateJob data={{
+        title: "",
+        description: "",
+        companyName: "",
+        location: "",
+        salary: "",
+        jobType: "FULL_TIME",
+        companyLogo: "",
+        role: "",
+        industryType: "",
+        responsibilities: [],
+        requriedSkills: [],
+        preferredSkills: [],
+        qualifications: [],
+        education: [],
+        experience: ""
+      }} title="Create Job" subTitle="Fill in the information below to create a new job posting"/>
+    )
+}

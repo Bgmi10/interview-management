@@ -64,3 +64,4 @@ export const degreesData = [
     }
   ];
   
+export const baseUrl = "http://localhost:3000"
