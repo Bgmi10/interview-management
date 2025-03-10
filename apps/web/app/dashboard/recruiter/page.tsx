@@ -8,8 +8,7 @@ import { useAuth } from "../../../context/AuthContext";
 
 export default function RecruiterDashboard() {
   const { user, loader } = useAuth();
-
-
+  
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -118,7 +117,7 @@ export default function RecruiterDashboard() {
         
         {/* Filter Section */}
         <motion.div 
-          className="mb-6 p-4 bg-gray-50 dark:bg-gray-800/40 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700"
+          className="mb-6 p-4 bg-gray-50 dark:bg-black rounded-xl shadow-sm border border-gray-200 dark:border-gray-700"
           variants={itemVariants}
         >
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
@@ -126,7 +125,7 @@ export default function RecruiterDashboard() {
               <input 
                 type="text" 
                 placeholder="Search jobs..." 
-                className="w-full p-2 pl-8 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-800 dark:text-white"
+                className="w-full p-2 pl-8 border border-gray-300 dark:border-gray-600 rounded-lg outline-none bg-white dark:bg-black text-gray-800 dark:text-white"
               />
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 absolute left-2.5 top-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -134,14 +133,14 @@ export default function RecruiterDashboard() {
             </div>
             
             <div className="flex items-center gap-3 w-full md:w-auto">
-              <select className="p-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-800 dark:text-white">
+              <select className="p-2 border border-gray-300 dark:border-gray-600 rounded-lg outline-none bg-white dark:bg-black text-gray-800 dark:text-white">
                 <option value="">Status: All</option>
                 <option value="active">Active</option>
                 <option value="draft">Draft</option>
                 <option value="closed">Closed</option>
               </select>
               
-              <select className="p-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-800 dark:text-white">
+              <select className="p-2 border border-gray-300 dark:border-gray-600 rounded-lg outline-nonebg-white dark:bg-black text-gray-800 dark:text-white">
                 <option value="">Sort by: Newest</option>
                 <option value="oldest">Oldest</option>
                 <option value="applications">Most Applications</option>

@@ -106,6 +106,25 @@ export default function Profile() {
         const file = e.target.files[0]
         setResumeLoader(true);
         // Delete old file if exists
+        const toBase64 = (file) =>
+          new Promise((resolve, reject) => {
+              const reader = new FileReader();
+              reader.readAsDataURL(file);
+              reader.onload = () => resolve(reader.result);
+              reader.onerror = (error) => reject(error);
+          });
+  
+      const base64String = await toBase64(file);
+  
+      // Send to backend as JSON
+      const response = await fetch("/api/extract-resume", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ filename: file.name, fileData: base64String, fileType: file.type }),
+      });
+  
+      const result = await response.json();
+      console.log(result);
         if (user?.resume) {
           const fileKey = user.resume.split("/").pop()
           await axios.post("/api/delete-file", { fileKey }, { withCredentials: true })
@@ -271,7 +290,7 @@ export default function Profile() {
           variants={itemVariants}
         >
           <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-blue-900 to-transparent opacity-40"></div>
-
+           
           <div className="flex flex-col md:flex-row items-center gap-6 z-10 relative">
             {/* Profile Picture */}
             <div className="relative group">
@@ -320,6 +339,7 @@ export default function Profile() {
                 </div>
               </div>
             </div>
+            
 
             <div>
               {!isEditing ? (
@@ -449,23 +469,16 @@ export default function Profile() {
                     <div className="p-4 rounded-lg">
                       <div className="flex justify-between items-center mb-3">
                         <h3 className="font-semibold text-gray-800 dark:text-white">Resume</h3>
-
+                       
                         {isEditing ? (
                           <button
                             onClick={() => resumeInputRef.current?.click()}
-                            className="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded-md text-sm flex items-center gap-2"
+                            className="px-3 py-1 text-white rounded-md text-sm flex items-center gap-2"
                           >
-                            <Upload size={14} />
-                            {resumeLoader ? (
-                               <motion.div 
-                                 animate={{ rotate: 360 }} 
-                                 transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-                               >
-                                 <Loader />
-                               </motion.div>
-                             ) : (
-                               "Upload"
-                             )}
+                            <div className="flex flex-col items-center justify-center gap-2">
+                              <input type="file" id="resumeUpload" className="hidden" onChange={handleResumeUpload} />
+                              <p className="text-sm text-gray-500">AI will extract details automatically</p>
+                            </div>
                           </button>
                         ) : (
                           user.resume && (
@@ -492,7 +505,7 @@ export default function Profile() {
 
                       {formData.resume ? (
                         <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
-                          <div className="h-24 bg-gray-100 flex items-center justify-center">
+                          <div className="h-24 bg-gray-100 dark:bg-black flex items-center justify-center">
                             <div className="text-center">
                               <p className="text-sm text-gray-500 dark:text-gray-400">Resume uploaded</p>
                               <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">

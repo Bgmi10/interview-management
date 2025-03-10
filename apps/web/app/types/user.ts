@@ -17,4 +17,5 @@ export interface User {
     companyLogo: string
     industry: string
     role: string
+    createdAt: string
 }

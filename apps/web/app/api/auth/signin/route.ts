@@ -7,53 +7,63 @@ export async function POST(req: Request) {
 
     if (!email || !password) {
         return new Response(
-            JSON.stringify({ message: "Invalid data"}),
+            JSON.stringify({ message: "Invalid data" }),
             { status: 400 }
-        )
+        );
     }
 
     try {
-      const user = await prisma.user.findUnique({
-          where: { email }
-      });
-  
-      if (!user) {
-        return new Response(
-         JSON.stringify({ message: "user not found" }),
-         { status: 404 }
-        )
-      }
-  
-      const isValidPassword = await comparePassword(password, user.password);
-  
-      if (!isValidPassword) {
-        return new Response(
-          JSON.stringify({ message: "Invalid password" }),
-          { status: 401 }
-        )
-      }
-  
-      const token = generateToken(user);
-      const cookie = serialize("token", token, {  
-          httpOnly: false,
-          path: "/",
-          maxAge: 60 * 60,
-          sameSite: "lax"
-      });
-  
-      const headers = new Headers();
-      headers.append("Set-Cookie", cookie);
-  
-      return new Response(
-        JSON.stringify({ message: "User authorized" }),
-        { status: 200, headers: headers }
-      )
-    } catch (e) {
-        console.log(e);
-        new Response(
-            JSON.stringify({ message: "Internal server error" }),
-            { status: 500 } 
-        )
-    }
+        const user = await prisma.user.findUnique({
+            where: { email }
+        });
 
+        if (!user) {
+            return new Response(
+                JSON.stringify({ message: "User not found" }),
+                { status: 404 }
+            );
+        }
+
+        const isValidPassword = await comparePassword(password, user.password);
+
+        if (!isValidPassword) {
+            return new Response(
+                JSON.stringify({ message: "Invalid password" }),
+                { status: 401 }
+            );
+        }
+
+        // Generate auth token
+        const token = generateToken(user);
+
+        // Set both token and role in cookies
+        const tokenCookie = serialize("token", token, {
+            httpOnly: true,
+            path: "/",
+            maxAge: 60 * 60,
+            sameSite: "lax"
+        });
+
+        const roleCookie = serialize("role", user.role, {
+            httpOnly: false,  // Accessible by client-side for UI changes
+            path: "/",
+            maxAge: 60 * 60,
+            sameSite: "lax"
+        });
+
+        const headers = new Headers();
+        headers.append("Set-Cookie", tokenCookie);
+        headers.append("Set-Cookie", roleCookie);
+
+        return new Response(
+            JSON.stringify({ message: "User authorized", role: user.role }),
+            { status: 200, headers: headers }
+        );
+    } catch (e) {
+        console.error(e);
+        return new Response(
+            JSON.stringify({ message: "Internal server error" }),
+            { status: 500 }
+        );
+    }
 }

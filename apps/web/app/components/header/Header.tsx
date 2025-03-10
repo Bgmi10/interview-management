@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image'; 
 import { GoCodescan } from "react-icons/go";
@@ -9,6 +9,7 @@ import { usePathname } from 'next/navigation';
 import { Toggle } from './Toggle';
 import FloatIcons from '../FloatIcons';
 import logo from "../../../public/logo.png";
+import whiteThemeLogo from "../../../public/logo-black.png";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { IoClose } from "react-icons/io5";
 import { useAuth } from '../../../context/AuthContext';
@@ -19,8 +20,9 @@ import { User } from '../../types/user';
 
 const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [themepreference, setThemePreference] = useState<string | null>(null);
     //@ts-ignore
-    const { user, isauthenticated, Logout, profileCompletion }: { user: User, isauthenticated: boolean, Logout: () => {}, porfileCompletion: number } = useAuth();
+    const { user, isauthenticated, Logout, profileCompletion, loader }: { loader: boolean, user: User, isauthenticated: boolean, Logout: () => {}, porfileCompletion: number } = useAuth();
     const navigate = useRouter();
 
     const navItems = [
@@ -53,6 +55,11 @@ const Header = () => {
     ];
 
     const pathname = usePathname();
+    
+
+    useEffect(() => {
+     setThemePreference(localStorage.getItem("theme") as string);
+    }, []);
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
@@ -107,7 +114,7 @@ const Header = () => {
                     {isMenuOpen ? <IoClose className="h-6 w-6" /> : <RxHamburgerMenu className="h-6 w-6" />}
                 </motion.button>}
                 <Link href="/" className="flex gap-2">
-                    <Image src={logo} width={20} height={20} alt="Hi-Free" className="object-cover" />
+                    {themepreference === "dark" ? <Image src={logo} width={50} height={20} alt="Hi-Free" className="object-cover" /> :<Image src={whiteThemeLogo} width={50} height={20} alt="Hi-Free" className="object-cover" />}
                     <span className="self-center text-lg font-bold whitespace-nowrap dark:text-white text-black">
                         Hi-Free
                     </span>
@@ -233,24 +240,24 @@ const Header = () => {
             </AnimatePresence>
 
             {/* Desktop Header */}
-            <div className="sm: hidden lg:block fixed lg:w-11/12 z-30 top-4 start-12 border-b border-gray-700 dark:border-gray-600 mx-auto bg-secondary/15 shadow-lg shadow-neutral-600/5 backdrop-blur-lg border border-primary/10 p-2 rounded-2xl">
+            <div className="sm: hidden lg:block fixed lg:w-11/12 z-30 top-4 start-12 border-b border-gray-700 dark:border-gray-600 mx-auto bg-secondary/15 shadow-lg shadow-neutral-600/5 backdrop-blur-3xl border border-primary/10 p-2 rounded-2xl">
                 <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
                     <Link href={"/"} className="flex items-center space-x-1 rtl:space-x-reverse">
                         <div className='grid place-items-center p-1'>
-                            <Image src={logo} width={40} height={40} alt="logo" className='w-full h-full object-cover sm:hidden lg:block' />
+                        {themepreference === "dark" ? <Image src={logo} width={50} height={20} alt="Hi-Free" className="object-cover" /> :<Image src={whiteThemeLogo} width={50} height={20} alt="Hi-Free" className="object-cover" />}
                         </div>
                         <span className="self-center text-lg lg:text-2xl font-bold whitespace-nowrap dark:text-white text-black">Hi-Free</span>
                     </Link>
                     
                     <div className="hidden md:flex justify-between gap-2 md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-                        {!isauthenticated && <div className='flex justify-center items-center gap-2'>
+                        <div className={`flex justify-center items-center gap-2 ${isauthenticated && "hidden"}`}>
                             <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                                 className="p-2 lg:px-4 lg:py-2 text-white bg-gradient-to-r from-gray-700 to-gray-900 hover:from-gray-600 hover:to-gray-800 transition-all duration-300 ease-in-out rounded-lg"
                             >
                                 <Link href="/signup">
-                                    <span className="lg:text-text text-sm font-semibold">Get Started</span>
+                                   <span className="lg:text-text text-sm font-semibold">Get Started</span>
                                 </Link>
                             </motion.button>
                             <motion.button
@@ -263,23 +270,26 @@ const Header = () => {
                                 </Link>
                             </motion.button>
                             <Toggle />
-                        </div>}
-                        {isauthenticated && <div className='flex justify-center items-center gap-2'>
-                            <img src={user?.profilePic ? user?.profilePic : `https://ui-avatars.com/api/?name=${user?.firstName}&background=4F46E5&color=fff`} className='w-9 h-9 rounded-full cursor-pointer' onClick={() => {
+                        </div>
+                         {isauthenticated && <div className='flex justify-center items-center gap-2'>
+                         {loader ? <div className='w-9 h-9 rounded-full animate-pulse dark:bg-gray-600 bg-gray-300'/> : <img src={user?.profilePic ? user?.profilePic : `https://ui-avatars.com/api/?name=${user?.firstName}&background=4F46E5&color=fff`} className='w-9 h-9 rounded-full cursor-pointer' onClick={() => {
                                 navigate.push("/profile")
-                            }}/>
+                            }}/>}
                             
                             <Toggle />
-                            <motion.button
+                            {!loader ? <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
-                                className="rounded-lg lg:px-4 lg:py-2 cursor-pointer text-white bg-gradient-to-r from-red-600 to-red-800 hover:from-red-500 hover:to-red-700 transition-all duration-300 ease-in-out"
+                                className="rounded-lg lg:px-4 lg:py-2 cursor-pointer text-white bg-gradient-to-r from-red-600 to-red-800 hover:from-red-500 hover:to-red-700"
                                 onClick={() => {
                                     setIsMenuOpen(false)
-                                    Logout}}
+                                    Logout()}}
                             >
                               <span className="lg:text-text text-sm font-semibold">Logout</span>
-                            </motion.button>
+                            </motion.button> : <motion.button
+                                className="rounded-lg lg:px-11 lg:py-5 cursor-pointer text-white dark:bg-gray-600 bg-gray-300 animate-pulse"
+                            >
+                            </motion.button>}
                         </div>}
                     </div>
                 </div>

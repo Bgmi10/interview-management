@@ -32,6 +32,8 @@ datasource db {
     candidateFeedback    FeedBack[]       @relation("CandidateFeedback")
     recuriterFeedback    FeedBack[]       @relation("RecruiterFeedback")
     jobPosts             JobPost[]        @relation("RecruiterJobPosts")
+    viewedProfiles       ProfileView[]    @relation("ViewerProfileViews")
+    profileViewers       ProfileView[]    @relation("ViewedProfileViews")
   }
 model JobApplication {
   id          Int       @id @default(autoincrement())
@@ -41,6 +43,18 @@ model JobApplication {
   jobId       Int
   status      String    @default("Pending") 
   appliedAt   DateTime  @default(now())
+
+  @@unique([candidateId, jobId])
+}
+
+model ProfileView {
+  id       Int       @id  @default(autoincrement())
+  viewer   User      @relation("ViewerProfileViews", fields: [viewerId], references: [id])
+  viewerId Int
+  viewed   User      @relation("ViewedProfileViews", fields: [viewedId], references: [id]) 
+  viewedId Int
+  viewedAt DateTime  @default(now())
+  @@unique([viewedId, viewerId])
 }
 model JobPost {
   id                       Int           @id @default(autoincrement())

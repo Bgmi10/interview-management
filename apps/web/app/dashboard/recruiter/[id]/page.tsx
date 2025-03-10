@@ -1,9 +1,9 @@
 import JobDetail from "../../../components/recruiter/JobDetail";
 
-    export default function ({ params }: { params: { id: string } }) {
+    export default function () {
         return(
             <div>
-                <JobDetail params={params} />
+                <JobDetail />
             </div>
         );
     }

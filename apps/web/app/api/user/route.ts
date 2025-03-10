@@ -23,6 +23,7 @@ export async function GET(req: Request) {
                     linkedIn: true,
                     phoneNumber: true,
                     role: true,
+                    id: true
                 };
 
                 let userData;
@@ -73,7 +74,29 @@ export async function GET(req: Request) {
                             industry: true,
                             jobPosts: {
                                 include: {
-                                    applications: true,
+                                    applications: {
+                                        include: {
+                                            candidate: {
+                                                select: {
+                                                    lastName: true,
+                                                    firstName: true,
+                                                    email: true,
+                                                    experience: true,
+                                                    linkedIn: true,
+                                                    phoneNumber: true,
+                                                    portfolioUrl: true,
+                                                    resume: true,
+                                                    skills: true,
+                                                    profilePic: true,
+                                                    collageName: true,
+                                                    specilization: true,
+                                                    updatedAt: true,
+                                                    createdAt: true,
+                                                }
+                                            },
+
+                                        }
+                                    },
                                 }
                             },
                             companyWebsiteUrl: true,

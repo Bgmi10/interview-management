@@ -86,7 +86,7 @@ export default function CreateJob({ data, title, subTitle }: { data: JobPost, ti
 
   if (!data) {
     return (
-      <div className="min-h-screen pt-24 lg:pt-32 pb-10 px-4 bg-white dark:bg-black flex justify-center items-center">
+      <div className="min-h-screen pt-24 lg:pt-32 pb-10 px-4 bg-white dark:bg-black flex justify-center items-center text-blue-600 dark:text-blue-400">
           <Loader size={32} className="animate-spin"/>
       </div>
     );

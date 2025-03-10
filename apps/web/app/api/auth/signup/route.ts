@@ -49,8 +49,16 @@ export async function POST(req: Request) {
         maxAge: 60 * 60 * 60
       });
 
+      const roleCookie = serialize("role", createdUser.role, {
+        httpOnly: false,
+        path: "/",
+        sameSite: "lax",
+        maxAge: 60 * 60 * 60
+      });
+
       const headers = new Headers();
       headers.append("Set-Cookie", cookie);
+      headers.append("Set-Cookie", roleCookie);
 
       return new Response(
         JSON.stringify({

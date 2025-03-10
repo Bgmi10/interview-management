@@ -25,12 +25,17 @@ export default function Login() {
     e.preventDefault();
     try {
      setLoader(true); 
-      const response = await axios.post("/api/auth/signin", {
+      const response: any = await axios.post("/api/auth/signin", {
         email: formData.email,
         password: formData.password,
       }, { withCredentials: true });
+      
       if (response.status === 200) {
-        router.push("/dashboard")
+        if (response.data.role === "Candidate") {
+          router.push("/dashboard/candidate")
+        } else if (response.data.role === "Recruiter") {
+          router.push("/dashboard/recruiter")
+        }
       }
     } catch (e: any) {
       console.log(e)
