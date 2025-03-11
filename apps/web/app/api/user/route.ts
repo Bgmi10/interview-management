@@ -148,7 +148,7 @@ export async function PUT(req: Request) {
     const { 
       phoneNumber, profilePic, companyName, companyWebsiteUrl, 
       companyLocation, industry, linkedIn, resume, portfolioUrl, 
-      skills, experience, collageName 
+      skills, experience, collageName, lastName, firstName
     } = await req.json();
     
     //@ts-ignore
@@ -165,8 +165,6 @@ export async function PUT(req: Request) {
       );
     }
 
-    console.log(user);
-    
     try {
       await prisma.user.update({
         where: { email: user.email },
@@ -183,6 +181,8 @@ export async function PUT(req: Request) {
           collageName,
           experience,
           companyWebsiteUrl,
+          firstName,
+          lastName
         }
       });
       

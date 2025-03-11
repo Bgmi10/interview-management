@@ -145,7 +145,7 @@ export default function CandidateDashboard() {
         </motion.div>
 
         {/* Resume Section */}
-        <motion.div 
+        {!user?.resume && <motion.div 
           className="mb-8 p-6 rounded-xl bg-white dark:bg-black shadow-sm border border-gray-200 dark:border-gray-700"
           variants={itemVariants}
         >
@@ -169,7 +169,7 @@ export default function CandidateDashboard() {
               </button>
             </Link>
           </div>
-        </motion.div>
+        </motion.div>}
 
         {/* Filter Section */}
         <motion.div 

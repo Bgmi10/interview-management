@@ -57,6 +57,7 @@ export default function Profile() {
     companyLogo: user?.companyLogo || "",
     industry: user?.industry || "",
     role: user?.role || "",
+    createdAt: ""
   })
 
   const [skillInput, setSkillInput] = useState("")
@@ -101,58 +102,50 @@ export default function Profile() {
 
   const handleResumeUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     try {
-        
       if (e.target.files && e.target.files[0]) {
-        const file = e.target.files[0]
+        const file = e.target.files[0];
         setResumeLoader(true);
-        // Delete old file if exists
-        const toBase64 = (file) =>
-          new Promise((resolve, reject) => {
-              const reader = new FileReader();
-              reader.readAsDataURL(file);
-              reader.onload = () => resolve(reader.result);
-              reader.onerror = (error) => reject(error);
-          });
-  
-      const base64String = await toBase64(file);
-  
-      // Send to backend as JSON
-      const response = await fetch("/api/extract-resume", {
+        
+        const formData = new FormData();
+        formData.append('resume', file);
+
+        const response = await fetch("/api/extract-resume", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ filename: file.name, fileData: base64String, fileType: file.type }),
-      });
-  
-      const result = await response.json();
-      console.log(result);
+          body: formData,
+        });
+        
+        const result = await response.json();
+
+        setFormData(p => ({...p, firstName: result.firstName, lastName: result.lastName, skills: [...result.skills], portfolioUrl: result.portfolioUrl, linkedIn: result.linkedIn, collageName: result.collageName, experience: result.experience, specilization: result.specilization, phoneNumber: result.phoneNumber }))
+        
         if (user?.resume) {
-          const fileKey = user.resume.split("/").pop()
-          await axios.post("/api/delete-file", { fileKey }, { withCredentials: true })
+          const fileKey = user.resume.split("/").pop();
+          await axios.post("/api/delete-file", { fileKey }, { withCredentials: true });
         }
-
-        // Upload new file
-        const uploadedUrl = await uploadToS3(file)
-        setFormData((prev) => ({ ...prev, resume: uploadedUrl }))
-
+        
+        const uploadedUrl = await uploadToS3(file);
+        setFormData((prev) => ({ ...prev, resume: uploadedUrl }));
+        
         setResumeLoader(false);
         setNotification({
           show: true,
           message: "Resume updated successfully!",
           type: "success",
-        })
-
-        setTimeout(() => setNotification({ show: false, message: "", type: "" }), 3000)
+        });
+        
+        setTimeout(() => setNotification({ show: false, message: "", type: "" }), 3000);
       }
     } catch (error) {
-      console.error("Error uploading resume:", error)
+      console.error("Error uploading resume:", error);
+      setResumeLoader(false);
       setNotification({
         show: true,
         message: "Failed to upload resume",
         type: "error",
-      })
-      setTimeout(() => setNotification({ show: false, message: "", type: "" }), 3000)
+      });
+      setTimeout(() => setNotification({ show: false, message: "", type: "" }), 3000);
     }
-  }
+  };
 
   const handleAddSkill = () => {
     if (skillInput.trim() && !formData.skills.includes(skillInput.trim())) {
@@ -200,6 +193,8 @@ export default function Profile() {
               experience: formData.experience,
               collageName: formData.collageName,
               specilization: formData.specilization,
+              firstName: formData.firstName,
+              lastName: formData.lastName
             }
           : {
               phoneNumber: formData.phoneNumber,
@@ -211,6 +206,8 @@ export default function Profile() {
               industry: formData.industry,
               linkedIn: formData.linkedIn,
               experience: formData.experience,
+              firstName: formData.firstName,
+              lastName: formData.lastName
             }
 
       // Send update request
@@ -323,9 +320,16 @@ export default function Profile() {
             </div>
 
             <div className="flex-1 text-center md:text-left">
-              <h1 className="text-2xl md:text-3xl font-bold">
-                {user?.firstName} {user?.lastName}
-              </h1>
+             {!isEditing && <h1 className="text-2xl md:text-3xl font-bold">
+                {formData.firstName ?? user?.firstName} {formData.lastName ?? user?.lastName}
+              </h1>}
+              { 
+                isEditing && 
+                <div className="flex gap-2 mb-2">
+                  <input type="text" name="firstName" placeholder="first Name" value={formData.firstName} className="p-3 rounded-lg border outline-none" onChange={handleChange} />
+                  <input type="text" name="lastName" placeholder="last Name" value={formData.lastName} className="p-3 rounded-lg border outline-none" onChange={handleChange} />
+                </div>
+              }
               <p className="text-blue-100">{user?.role}</p>
 
               {/* Progress bar */}
@@ -357,7 +361,9 @@ export default function Profile() {
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    onClick={() => setIsEditing(false)}
+                    onClick={() => {
+                      setIsEditing(false)
+                     }}
                     className="p-2 bg-gray-200 text-gray-700 cursor-pointer rounded-lg flex items-center gap-2 shadow-lg hover:bg-gray-300 transition-all duration-300"
                   >
                     <X size={16} />
@@ -471,15 +477,31 @@ export default function Profile() {
                         <h3 className="font-semibold text-gray-800 dark:text-white">Resume</h3>
                        
                         {isEditing ? (
-                          <button
-                            onClick={() => resumeInputRef.current?.click()}
-                            className="px-3 py-1 text-white rounded-md text-sm flex items-center gap-2"
-                          >
-                            <div className="flex flex-col items-center justify-center gap-2">
-                              <input type="file" id="resumeUpload" className="hidden" onChange={handleResumeUpload} />
-                              <p className="text-sm text-gray-500">AI will extract details automatically</p>
-                            </div>
-                          </button>
+                          <div className="flex flex-col items-center justify-center gap-2">
+                          <label htmlFor="resumeUpload" className="relative cursor-pointer">
+                            <span 
+                              className="relative gap-1 flex px-6 py-3 text-white font-normal bg-blue-600 rounded-lg shadow-lg transition-all duration-300 
+                                       hover:bg-blue-700 hover:shadow-blue-500/50
+                                       focus:ring-4 focus:ring-blue-400 focus:outline-none items-center"
+                            >
+                              {resumeLoader ? <Loader className="animate-spin" size={15}/> : <Upload size={18}/>}  
+                              <span>{resumeLoader ? "Extracting Details..." : "Upload Resume"}</span>  
+                            </span>
+                            <div className="absolute -inset-1 blur-xl bg-blue-500 opacity-40 rounded-lg"></div>
+                          </label>
+                        
+                          {/* Hidden File Input */}
+                          <input 
+                            type="file" 
+                            id="resumeUpload" 
+                            className="hidden" 
+                            onChange={handleResumeUpload} 
+                            accept="application/pdf"
+                          />
+                        
+                          <p className="text-sm text-gray-400 italic">AI will extract details automatically</p>
+                        </div>
+                        
                         ) : (
                           user.resume && (
                             <a

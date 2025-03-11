@@ -357,7 +357,7 @@ export default function Setup() {
                         className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-xl text-black dark:text-white outline-none focus:ring-blue-500 focus:border-blue-500 px-7"
                     />}
                         {collageResponse.length > 2 && form.collage === "" && 
-                        <div className="border lg:w-[376px] w-[270px] ml-1 border-gray-500 h-44 absolute dark:border-gray-600 rounded-xl mt-1 overflow-y-auto dark:backdrop-blur-2xl bg-white">
+                        <div className="border lg:w-[376px] w-[270px] ml-1 border-gray-500 h-44 absolute dark:border-gray-600 rounded-xl mt-1 overflow-y-auto dark:backdrop-blur-2xl bg-white dark:bg-black">
                               {
                                 collageResponse?.map((collage: any, idx) => (
                                     <div key={idx} className="flex m-2 mb-4 gap-5 items-center cursor-pointer hover:border-b border-gray-600" onClick={() => setForm(p => ({...p, collage: collage.name}))}>
