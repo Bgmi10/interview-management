@@ -183,10 +183,10 @@ export async function PUT(req: Request) {
           companyWebsiteUrl,
           firstName,
           lastName
-        }
+        },
       });
       
-      return NextResponse.json({ message: "user setup complete" }, { status: 200 });
+      return NextResponse.json({ message: "User updated" }, { status: 200 });
     } catch (e) {
       console.log(e);
       return NextResponse.json({ message: "error while updating user" }, { status: 500 });

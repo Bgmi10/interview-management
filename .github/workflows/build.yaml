@@ -1,0 +1,30 @@
+name: Build Check
+
+on:
+  push:
+    branches:
+      - main  # Change this to your default branch if needed
+      - dev   # You can add more branches if required
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'  # Change the version if needed
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Build
+        run: npm run build
+
+      - name: Notify on Failure
+        if: failure()
+        run: echo "Build failed!"

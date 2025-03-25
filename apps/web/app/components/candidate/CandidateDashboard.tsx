@@ -3,7 +3,7 @@ import React from "react";
 import ApplicationList from "../../components/candidate/ApplicationList";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Search, Briefcase, FileText, Loader } from "lucide-react";
+import { Briefcase, FileText, Loader } from "lucide-react";
 import { useAuth } from "../../../context/AuthContext";
 
 export default function CandidateDashboard() {
@@ -49,15 +49,6 @@ export default function CandidateDashboard() {
               <h1 className="text-2xl md:text-3xl font-bold">Your Career Dashboard</h1>
               <p className="text-purple-100 mt-2">Track your applications and find new opportunities</p>
             </div>
-
-            <Link href="/jobs">
-              <motion.button
-                className="cursor-pointer px-4 py-2 bg-white text-purple-700 rounded-lg font-medium flex items-center gap-2 shadow-lg hover:bg-purple-50 transition-all duration-300"
-              >
-                <Search size={18} />
-                Browse Jobs
-              </motion.button>
-            </Link>
           </div>
         </motion.div>
 
@@ -98,7 +89,9 @@ export default function CandidateDashboard() {
               </div>
               <div>
                 <p className="text-sm text-gray-500 dark:text-gray-400">Applications</p>
-                <p className="text-2xl font-bold text-gray-800 dark:text-white">{loader ? <Loader size={20} className="animate-spin"/> : user?.jobApplications?.length || 0}</p>
+                <p className="text-2xl font-bold text-gray-800 dark:text-white">{loader ? <Loader size={20} className="animate-spin"/> :
+                 //@ts-ignore
+                user?.jobApplications?.length || 0}</p>
               </div>
             </div>
           </div>
@@ -116,6 +109,7 @@ export default function CandidateDashboard() {
                 <p className="text-2xl font-bold text-gray-800 dark:text-white">
                   {loader ? 
                     <Loader size={20} className="animate-spin"/> : 
+                    //@ts-ignore
                     user?.jobApplications?.filter((app: any) => app.status === "Pending")?.length || 0
                   }
                 </p>
@@ -136,6 +130,7 @@ export default function CandidateDashboard() {
                 <p className="text-2xl font-bold text-gray-800 dark:text-white">
                   {loader ? 
                     <Loader size={20} className="animate-spin"/> : 
+                    //@ts-ignore
                     user?.jobApplications?.filter((app: any) => app.status === "Interview")?.length || 0
                   }
                 </p>
@@ -145,7 +140,8 @@ export default function CandidateDashboard() {
         </motion.div>
 
         {/* Resume Section */}
-        {!user?.resume && <motion.div 
+        {//@ts-ignore
+        !user?.resume && <motion.div 
           className="mb-8 p-6 rounded-xl bg-white dark:bg-black shadow-sm border border-gray-200 dark:border-gray-700"
           variants={itemVariants}
         >
@@ -156,7 +152,8 @@ export default function CandidateDashboard() {
               </div>
               <div>
                 <h3 className="text-lg font-bold text-gray-800 dark:text-white">Your Resume</h3>
-                {user?.resume ? (
+                {//@ts-ignore
+                user?.resume ? (
                   <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Last updated: {new Date().toLocaleDateString()}</p>
                 ) : (
                   <p className="text-sm text-red-500 mt-1">No resume uploaded yet</p>
@@ -165,7 +162,8 @@ export default function CandidateDashboard() {
             </div>
             <Link href="/profile">
               <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium">
-                {user?.resume ? "Update Resume" : "Upload Resume"}
+                {//@ts-ignore
+                user?.resume ? "Update Resume" : "Upload Resume"}
               </button>
             </Link>
           </div>

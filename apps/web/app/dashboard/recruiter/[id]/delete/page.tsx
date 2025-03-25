@@ -1,9 +1,10 @@
 "use client";
 import { deleteJob } from "../../recruiterapi";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
-export default function DeleteJob({ params }: { params: { id: string } }) {
+export default function DeleteJob() {
     const router = useRouter();
+    const params: any = useParams();
 
     const handleDelete = async () => {
         await deleteJob(params.id);

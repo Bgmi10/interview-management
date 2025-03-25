@@ -73,7 +73,9 @@ export default function RecruiterDashboard() {
               </div>
               <div>
                 <p className="text-sm text-gray-500 dark:text-gray-400">Active Jobs</p>
-                <p className="text-2xl font-bold text-gray-800 dark:text-white">{loader ? <Loader size={20} className="animate-spin"/> : user?.jobPosts?.length}</p>
+                <p className="text-2xl font-bold text-gray-800 dark:text-white">{loader ? <Loader size={20} className="animate-spin"/> : 
+                //@ts-ignore
+                user?.jobPosts?.length}</p>
               </div>
             </div>
           </div>

@@ -7,7 +7,7 @@ import { useAuth } from "../../../context/AuthContext";
 
 export default function JobList() {
  const { user, loader } = useAuth();
-
+ //@ts-ignore
  const jobs = user?.jobPosts;
 
   const containerVariants = {

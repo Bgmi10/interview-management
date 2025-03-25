@@ -10,7 +10,7 @@ export async function POST (req: Request) {
     return NextResponse.json({ message: "Missing body" }, { status: 400 })
   } 
   
-//@ts-ignore
+//@ts-expect-error
   const cookies = req.cookies;
 
   const user = verifyToken(cookies) as User;

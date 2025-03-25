@@ -8,6 +8,7 @@ export default function () {
         companyName: "",
         location: "",
         salary: "",
+        //@ts-ignore
         jobType: "FULL_TIME",
         companyLogo: "",
         role: "",

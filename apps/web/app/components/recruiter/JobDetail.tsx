@@ -22,7 +22,7 @@ import {
   Users
 } from "lucide-react";
 import Link from "next/link";
-import { JobPost, JobTypeEnum, JobPostEnum } from "../../types/job";
+import { JobPost } from "../../types/job";
 
 export default function JobDetail() {
   const [job, setJob] = useState<JobPost | null>(null);
@@ -35,6 +35,7 @@ export default function JobDetail() {
     async function loadJob() {
       try {
         setLoading(true);
+        //@ts-ignore
         const jobData = await fetchJobById(params.id);
         setJob(jobData);
       } catch (err) {

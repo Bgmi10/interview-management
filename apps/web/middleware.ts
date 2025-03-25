@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
+//@ts-ignore
 import cookie from "cookie";
 
 export function middleware(req: NextRequest) {

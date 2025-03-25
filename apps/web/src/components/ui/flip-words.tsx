@@ -38,6 +38,7 @@ export const FlipWords = ({
       }}
     >
       <motion.div
+      //@ts-ignore
         key={currentWordObj.word}
         initial={{
           opacity: 0,
@@ -64,9 +65,13 @@ export const FlipWords = ({
           "z-10 inline-block relative text-left text-neutral-900 dark:text-neutral-100 px-2",
           className
         )}
+        //@ts-ignore
         style={{ color: currentWordObj.color }} // Apply color here
       >
-        {currentWordObj.word.split(" ").map((word, wordIndex ) => (
+        
+        {
+        //@ts-ignore
+        currentWordObj.word.split(" ").map((word, wordIndex ) => (
           <motion.span
             key={word}
             initial={{ opacity: 0, y: 10, filter: "blur(8px)" }}

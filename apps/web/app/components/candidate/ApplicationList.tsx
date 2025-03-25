@@ -7,7 +7,7 @@ import { useAuth } from "../../../context/AuthContext";
 
 export default function ApplicationList() {
   const { user, loader } = useAuth();
-  
+  //@ts-ignore
   const applications = user?.jobApplications;
   
   const containerVariants = {

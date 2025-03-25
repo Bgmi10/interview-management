@@ -5,7 +5,7 @@
     import axios from "axios";
     import { Loader } from "@/components/ui/Loader";
     import { isValidEmail } from "../../../src/utils/Helper";
-import { AuthContext } from "../../../context/AuthContext";
+    import { AuthContext } from "../../../context/AuthContext";
 
     export default function Signup() {
         const [isShowPassword, setIsShowPassword] = useState(false);
