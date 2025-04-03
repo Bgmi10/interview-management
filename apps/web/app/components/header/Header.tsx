@@ -13,7 +13,7 @@ import whiteThemeLogo from "../../../public/logo-black.png";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { IoClose } from "react-icons/io5";
 import { useAuth } from '../../../context/AuthContext';
-import { Bell, Search, LogOut, Home, X, MapPin, Briefcase } from 'lucide-react';
+import { Bell, Search, LogOut, Home, X, MapPin, Briefcase, SearchCheck } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { User } from '../../types/user';
@@ -28,6 +28,7 @@ const Header = () => {
     //@ts-ignore
     const { user, isauthenticated, Logout, profileCompletion, loader }: { loader: boolean, user: User, isauthenticated: boolean, Logout: () => {}, porfileCompletion: number } = useAuth();
     const navigate = useRouter();
+    const [jobQueryResults, setJobQueryResults] = useState<any>(null);
 
     const navItems = [
         {
@@ -160,14 +161,32 @@ const Header = () => {
     }
 
     const handleJobLocationChange = (e: any) => {
-        setJobLocation(e.target.value)
+        setJobLocation(e.target.value);
     }
+
+    async function fetchLocation() {
+        const response = await fetch(`https://api.geoapify.com/v1/geocode/autocomplete?text=${jobLocation}&apiKey=464ed0df1c0342c6a959b07bdcad59a5`);
+        const json = await response.json();
+        setJobQueryResults(json);
+    }
+
+    useEffect(() => {
+        if (jobLocation === "") {
+            setJobQueryResults(null);
+            return;
+        };
+
+      const timeout = setTimeout(() => {
+        fetchLocation();
+      }, 300);
+
+      return () => clearTimeout(timeout);
+    }, [jobLocation]);
+
 
     return (
         <header className="mt-[-40px] p-5 text-center">
-            
             {window.location.pathname === "/" && <FloatIcons />}
-            
             <div className={`top-4 left-3 right-3 z-40 md:hidden fixed flex ${!isauthenticated ? "justify-center" : "justify-between"} backdrop-blur-md border-gray-800 border p-2 rounded-xl bg-secondary/30`}>
                 {isauthenticated && <motion.button 
                     onClick={toggleMenu} 
@@ -228,8 +247,21 @@ const Header = () => {
                                     type="text" 
                                     placeholder="Location" 
                                     className="w-full bg-transparent border-none outline-none text-sm dark:text-white text-black"
+                                    onChange={handleJobLocationChange}
                                 />
                             </motion.div>
+
+                           { jobQueryResults?.features?.length > 0 &&
+                            <div className='flex flex-col bg-white items-start gap-3 absolute rounded-xl p-4 overflow-y-scroll'>
+                                {
+                                    jobQueryResults?.features?.map((item: any) => (
+                                        <div key={item} className='flex gap-1'>
+                                            <Search size={20} />
+                                            <span className='line-clamp-1'>{item.properties.formatted}</span>
+                                        </div>
+                                    ))
+                                }
+                            </div>}
                             
                             <motion.button
                                 variants={searchInputVariants}
@@ -461,10 +493,24 @@ const Header = () => {
                                         <input 
                                             type="text" 
                                             placeholder="Location" 
+                                            value={jobLocation}
                                             className="w-full bg-transparent border-none outline-none text-black dark:text-white"
                                             onChange={handleJobLocationChange}
                                         />
                                     </motion.div>
+
+                                    { jobQueryResults?.features?.length > 0 &&
+                                        <div className='flex flex-col backdrop-blur-xl bg-gray-200 items-start gap-3 absolute right-52 top-57 rounded-xl p-3 overflow-y-scroll w-[450px]'>
+                                            {
+                                                jobQueryResults?.features?.map((item: any) => (
+                                                    <div key={item} className='flex gap-1  cursor-pointer'>
+                                                        <Search size={20} />
+                                                        <span className='line-clamp-1'>{item.properties.formatted}</span>
+                                                    </div>
+                                                ))
+                                            }
+                                        </div>
+                                    }
                                     
                                     <motion.button
                                         variants={searchInputVariants}

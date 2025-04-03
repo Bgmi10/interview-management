@@ -20,6 +20,7 @@ import {
   Phone,
   Mail,
   Loader,
+  MapPinCheck,
 } from "lucide-react"
 import { uploadToS3 } from "../../../src/utils/s3"
 import axios from "axios"
@@ -33,7 +34,7 @@ export default function Profile() {
   const [isEditing, setIsEditing] = useState(false)
   const [saving, setSaving] = useState(false)
   const [resumeLoader, setResumeLoader] = useState(false);
-  
+  const [userLocation, setUserLocation] = useState(null);
   const [formData, setFormData] = useState<User>({
     firstName: user?.firstName || "",
     lastName: user?.lastName || "",
@@ -264,6 +265,18 @@ export default function Profile() {
     },
   }
 
+  async function fetchUserLocation() {
+    const response = await fetch("https://api.geoapify.com/v1/ipinfo?&apiKey=464ed0df1c0342c6a959b07bdcad59a5");
+    const json = await response.json();
+    setUserLocation(json);
+
+  } 
+
+  useEffect(() => {
+    fetchUserLocation();
+  }, []);
+
+
   return (
     <div className="min-h-screen pt-24 lg:pt-32 pb-10 px-4 bg-white dark:bg-black">
       {/* Notification */}
@@ -453,6 +466,13 @@ export default function Profile() {
                           )}
                         </p>
                       )}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <MapPinCheck className="text-blue-500" size={18}/>
+                    <div>
+                     <span>{userLocation?.city?.name}</span>,
+                     <span>{userLocation?.state?.name}</span>
                     </div>
                   </div>
                 </div>
