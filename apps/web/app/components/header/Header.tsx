@@ -13,7 +13,7 @@ import whiteThemeLogo from "../../../public/logo-black.png";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { IoClose } from "react-icons/io5";
 import { useAuth } from '../../../context/AuthContext';
-import { Bell, Search, LogOut, Home, X, MapPin, Briefcase, SearchCheck } from 'lucide-react';
+import { Bell, Search, LogOut, Home, X, MapPin, Briefcase } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { User } from '../../types/user';
@@ -29,6 +29,7 @@ const Header = () => {
     const { user, isauthenticated, Logout, profileCompletion, loader }: { loader: boolean, user: User, isauthenticated: boolean, Logout: () => {}, porfileCompletion: number } = useAuth();
     const navigate = useRouter();
     const [jobQueryResults, setJobQueryResults] = useState<any>(null);
+    const [jobTitleResults, setJobTitleResults] = useState(null);
 
     const navItems = [
         {
@@ -74,7 +75,7 @@ const Header = () => {
     };
 
     // Calculate profile completion percentage
-    const completionPercentage = profileCompletion || 65; // Default to 65% if not provided
+    const completionPercentage = profileCompletion || 65;
 
     // Drawer animation variants
     const drawerVariants = {
@@ -138,23 +139,45 @@ const Header = () => {
     };
  
     const handleSearch = () => {
-       if (!jobLocation || jobTitle) {
+       if (!jobLocation || !jobTitle) {
         setError("fill the required fields");
         return;
        }
+       setIsSearchOpen(false);
+       window.location.href = (`/dashboard/candidate/search?jobtitle=${jobTitle}&joblocation=${jobLocation}`)
     }
 
     const fetchJobtitle = async () => {
+        try{ 
+            const response = await fetch("/api/job-title-suggestion", {
+                method: "POST",
+                body: JSON.stringify({
+                    query: jobTitle
+                })
+            });
+            const json = await response.json();
+            setJobTitleResults(json);
+        } catch (e) {
+            console.log(e);
+        }
         
     }
 
     useEffect(() => {
+      const isExist = jobTitleResults?.suggestions?.find((item) => {
+        return item === jobTitle 
+      });
+
+        if (isExist === jobTitle) {
+         setJobTitleResults(null);
+         return; 
+        }
       const timeOut = setTimeout(() => {
          fetchJobtitle();
-      }, 500)
+      }, 200)
 
       return () => clearTimeout(timeOut);
-    }, [jobTitle])
+    }, [jobTitle]);
 
     const handleJobTitleChange = (e: any) => {
       setJobTitle(e.target.value);
@@ -176,9 +199,18 @@ const Header = () => {
             return;
         };
 
+      const isExist = jobQueryResults?.features?.find((item: any) => {
+        return item?.properties?.formatted === jobLocation
+      }); 
+
+      if (isExist) {
+        setJobQueryResults(null);
+        return;
+      }
+
       const timeout = setTimeout(() => {
         fetchLocation();
-      }, 300);
+      }, 200);
 
       return () => clearTimeout(timeout);
     }, [jobLocation]);
@@ -238,8 +270,22 @@ const Header = () => {
                                     type="text" 
                                     placeholder="Job title or keyword" 
                                     className="w-full bg-transparent border-none outline-none text-sm dark:text-white text-black"
+                                    onChange={handleJobTitleChange}
+                                    value={jobTitle}
                                 />
                             </motion.div>
+
+                            { jobTitleResults?.suggestions?.length > 0 &&
+                            <div className='flex flex-col bg-white items-start gap-3 absolute rounded-xl p-4 overflow-y-scroll'>
+                                {
+                                    jobTitleResults?.suggestions?.map((item: any) => (
+                                        <div key={item} className='flex gap-1' onClick={() => setJobTitle(item)}>
+                                            <Search size={20} />
+                                            <span className='line-clamp-1' >{item}</span>
+                                        </div>
+                                    ))
+                                }
+                            </div>}
                             
                             <motion.div variants={searchInputVariants} className="flex items-center bg-white dark:bg-gray-800 rounded-lg px-3 py-2">
                                 <MapPin size={16} className="text-gray-500 mr-2" />
@@ -255,7 +301,7 @@ const Header = () => {
                             <div className='flex flex-col bg-white items-start gap-3 absolute rounded-xl p-4 overflow-y-scroll'>
                                 {
                                     jobQueryResults?.features?.map((item: any) => (
-                                        <div key={item} className='flex gap-1'>
+                                        <div key={item} className='flex gap-1' onClick={() => setJobLocation(item.properties.formatted)}>
                                             <Search size={20} />
                                             <span className='line-clamp-1'>{item.properties.formatted}</span>
                                         </div>
@@ -482,8 +528,22 @@ const Header = () => {
                                             placeholder="Job title or keyword" 
                                             className="w-full bg-transparent border-none outline-none text-black dark:text-white"
                                             onChange={handleJobTitleChange}
+                                            value={jobTitle}
                                         />
                                     </motion.div>
+
+                                    { jobTitleResults?.suggestions?.length > 0 &&
+                                        <div className='flex flex-col bg-white items-start gap-3 mt-14 absolute rounded-xl p-4 overflow-y-scroll '>
+                                            {
+                                                jobTitleResults?.suggestions?.map((item: any) => (
+                                                    <div key={item} className='flex gap-1 cursor-pointer'>
+                                                        <Search size={20} />
+                                                        <span className='line-clamp-1' onClick={() => setJobTitle(item)}>{item}</span>
+                                                    </div>
+                                                ))
+                                            }
+                                        </div>
+                                    }
                                     
                                     <motion.div 
                                         variants={searchInputVariants} 
@@ -500,10 +560,10 @@ const Header = () => {
                                     </motion.div>
 
                                     { jobQueryResults?.features?.length > 0 &&
-                                        <div className='flex flex-col backdrop-blur-xl bg-gray-200 items-start gap-3 absolute right-52 top-57 rounded-xl p-3 overflow-y-scroll w-[450px]'>
+                                        <div className='flex flex-col backdrop-blur-xl bg-white items-start gap-3 absolute right-52 top-57 rounded-xl p-3 overflow-y-scroll w-[450px]'>
                                             {
                                                 jobQueryResults?.features?.map((item: any) => (
-                                                    <div key={item} className='flex gap-1  cursor-pointer'>
+                                                    <div key={item} className='flex gap-1  cursor-pointer' onClick={() => setJobLocation(item.properties.formatted)}>
                                                         <Search size={20} />
                                                         <span className='line-clamp-1'>{item.properties.formatted}</span>
                                                     </div>

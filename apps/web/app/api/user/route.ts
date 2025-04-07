@@ -41,7 +41,11 @@ export async function GET(req: Request) {
                             skills: true,
                             experience: true,
                             specilization: true,
-                            jobApplications: true,
+                            jobApplications: {
+                                include: {
+                                    job: true
+                                }
+                            },
                         },
                     });
 

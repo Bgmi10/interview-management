@@ -2,9 +2,10 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { MapPin, Briefcase, Clock, ChevronRight, IndianRupee } from "lucide-react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function ApplicationCard({ application }: { application: any }) {
+  const router = useRouter();
   const formatDate = (dateString: any) => {
     const date = new Date(dateString);
     return new Intl.DateTimeFormat("en-US", {
@@ -16,6 +17,7 @@ export default function ApplicationCard({ application }: { application: any }) {
 
   const job = application.job;
   const appliedDate = formatDate(application.appliedAt);
+
   
   const getStatusColor = (status: string) => {
     switch(status) {
@@ -89,12 +91,10 @@ export default function ApplicationCard({ application }: { application: any }) {
           </p>
         </div>
 
-        <Link href={`/applications/${application.id}`}>
-          <button className="w-full py-2 px-4 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium flex items-center justify-center gap-2 transition-colors">
+          <button onClick={() => router.push(`/dashboard/candidate/job/${job.id}`)} className="w-full py-2 px-4 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium flex items-center justify-center gap-2 transition-colors">
             View Application
             <ChevronRight size={16} />
           </button>
-        </Link>
       </div>
     </motion.div>
   );
