@@ -1,34 +1,54 @@
 "use client";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState, ReactNode } from "react";
 
-export const ThemeContext = createContext({
-    theme: "light",
-    toggleTheme: () => {}
+// Define the context type
+type ThemeContextType = {
+  theme: string;
+  toggleTheme: () => void;
+  isChatOpen: boolean;
+  setIsChatOpen: (value: boolean) => void;
+};
+
+// Create the context with a default placeholder
+export const ThemeContext = createContext<ThemeContextType>({
+  theme: "light",
+  toggleTheme: () => {},
+  isChatOpen: false,
+  setIsChatOpen: () => {},
 });
 
-export const ThemeProvider = ({ children }: { children: any}) => {
-    const [theme, setTheme] = useState(() => {
-      const theme = localStorage.getItem('theme');
-      return theme ? theme : "light"
-    });
+// Define the props type for ThemeProvider
+type ThemeProviderProps = {
+  children: ReactNode;
+};
 
-    const toggleTheme = () => {
-      setTheme(prev => prev === "light" ? "dark" : "light");
+export const ThemeProvider = ({ children }: ThemeProviderProps) => {
+  const [theme, setTheme] = useState(() => {
+    const storedTheme = localStorage.getItem("theme");
+    return storedTheme ? storedTheme : "light";
+  });
+
+  const [isChatOpen, setIsChatOpen] = useState(false);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+  };
+
+  useEffect(() => {
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
     }
+  }, [theme]);
 
-    useEffect(() => {
-      if (theme === "dark") {
-        document.documentElement.classList.add("dark");
-        localStorage.setItem("theme", "dark")
-      } else {
-        document.documentElement.classList.remove("dark");
-        localStorage.setItem("theme", "light");
-      }
-    }, [theme]);
-
-    return (
-      <ThemeContext.Provider value={{theme, toggleTheme}}>
-        {children}
-      </ThemeContext.Provider>
-    )
-}
+  return (
+    <ThemeContext.Provider
+      value={{ theme, toggleTheme, isChatOpen, setIsChatOpen }}
+    >
+      {children}
+    </ThemeContext.Provider>
+  );
+};

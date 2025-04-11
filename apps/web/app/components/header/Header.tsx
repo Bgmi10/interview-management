@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image'; 
 import { GoCodescan } from "react-icons/go";
@@ -13,10 +13,11 @@ import whiteThemeLogo from "../../../public/logo-black.png";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { IoClose } from "react-icons/io5";
 import { useAuth } from '../../../context/AuthContext';
-import { Bell, Search, LogOut, Home, X, MapPin, Briefcase } from 'lucide-react';
+import { Bell, Search, LogOut, Home, X, MapPin, Briefcase, TrendingUp, ChartBar, MessageCircle, Power, Code, Delete } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { User } from '../../types/user';
+import { ThemeContext } from '../../../context/ThemeContext';
 
 const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -30,6 +31,10 @@ const Header = () => {
     const navigate = useRouter();
     const [jobQueryResults, setJobQueryResults] = useState<any>(null);
     const [jobTitleResults, setJobTitleResults] = useState(null);
+    const { setIsChatOpen } = useContext(ThemeContext);
+    const [userSkillsQuery, setUserSkillsQuery] = useState("");
+    const [skillsSuggestions, setSkillsSuggestions] = useState(null); 
+    const [userSelectedSkills, setUserSelectedSkills] = useState([]);
 
     const navItems = [
         {
@@ -139,12 +144,12 @@ const Header = () => {
     };
  
     const handleSearch = () => {
-       if (!jobLocation || !jobTitle) {
-        setError("fill the required fields");
-        return;
-       }
        setIsSearchOpen(false);
-       window.location.href = (`/dashboard/candidate/search?jobtitle=${jobTitle}&joblocation=${jobLocation}`)
+       if (user.role === "Candidate") {
+         window.location.href = (`/dashboard/candidate/search?jobtitle=${jobTitle}&joblocation=${jobLocation}`);
+       } else {
+        window.location.href = (`/dashboard/recruiter/search?jobrole=${jobTitle}&skills=${userSelectedSkills}`);
+       }
     }
 
     const fetchJobtitle = async () => {
@@ -174,7 +179,7 @@ const Header = () => {
         }
       const timeOut = setTimeout(() => {
          fetchJobtitle();
-      }, 200)
+      }, 500)
 
       return () => clearTimeout(timeOut);
     }, [jobTitle]);
@@ -210,10 +215,41 @@ const Header = () => {
 
       const timeout = setTimeout(() => {
         fetchLocation();
-      }, 200);
+      }, 500);
 
       return () => clearTimeout(timeout);
     }, [jobLocation]);
+
+    const handleSkillsChange = (e) => {
+      setUserSkillsQuery(e.target.value);
+    }
+
+    async function fetchSkillsSuggestion () {
+       try {
+        const response = await fetch("/api/skills-suggestions", {
+            method: "POST",
+            body: JSON.stringify({
+                query: userSkillsQuery
+            })
+        });
+        const json = await response.json();
+        console.log(json);
+        setSkillsSuggestions(json);
+       } catch (e) {
+        console.log(e);
+       }
+    }
+
+    useEffect(() => {
+        if (!userSkillsQuery) {
+            return;
+        }
+        const timer = setTimeout(() => {
+          fetchSkillsSuggestion();
+        }, 400);
+
+        return () => clearTimeout(timer);
+    }, [userSkillsQuery]);
 
 
     return (
@@ -253,7 +289,7 @@ const Header = () => {
                         variants={searchBarVariants}
                     >
                         <div className="flex justify-between items-center mb-3">
-                            <h3 className="font-medium text-sm dark:text-white text-black">Search Jobs</h3>
+                            <h3 className="font-medium text-sm dark:text-white text-black">{user.role === "Candidate" ? "Search Jobs" : "Search Candidates"}</h3>
                             <motion.button 
                                 onClick={toggleSearch}
                                 whileTap={{ scale: 0.9 }}
@@ -268,7 +304,7 @@ const Header = () => {
                                 <Briefcase size={16} className="text-gray-500 mr-2" />
                                 <input 
                                     type="text" 
-                                    placeholder="Job title or keyword" 
+                                    placeholder={user.role === "Candidate" ? "Job title or keyword" : "Enter a job role"} 
                                     className="w-full bg-transparent border-none outline-none text-sm dark:text-white text-black"
                                     onChange={handleJobTitleChange}
                                     value={jobTitle}
@@ -291,9 +327,14 @@ const Header = () => {
                                 <MapPin size={16} className="text-gray-500 mr-2" />
                                 <input 
                                     type="text" 
-                                    placeholder="Location" 
+                                    placeholder={user.role === "Candidate" ? "Location" : "Enter a skills"} 
+                                    value={user.role === "Candidate" ? jobLocation : userSkillsQuery}
                                     className="w-full bg-transparent border-none outline-none text-sm dark:text-white text-black"
-                                    onChange={handleJobLocationChange}
+                                    onChange={user.role === "Candidate" ? handleJobLocationChange : handleSkillsChange}
+                                    onBlur={() => {
+                                        setJobQueryResults(null);
+                                        setSkillsSuggestions(null);
+                                    }}
                                 />
                             </motion.div>
 
@@ -308,7 +349,36 @@ const Header = () => {
                                     ))
                                 }
                             </div>}
-                            
+
+                            { user.role === "Recruiter" && skillsSuggestions?.suggestions.length > 0 &&
+                                <div className='flex flex-col bg-white items-start gap-3 absolute rounded-xl p-4 overflow-y-scroll'>
+                                    {
+                                        skillsSuggestions?.suggestions?.map((item: any) => (
+                                            <div key={item} className='flex gap-1  cursor-pointer' onClick={() => {      
+                                                setUserSelectedSkills((prev: any) => [...prev, item]);
+                                                 setSkillsSuggestions(null);
+                                            }}>
+                                                <Search size={20} />
+                                                <span className='line-clamp-1'>{item}</span>
+                                            </div>
+                                        ))
+                                    }
+                                </div>
+                            }
+                             {userSelectedSkills.length > 0 && <div className="flex flex-wrap mt-2 gap-2">
+                                    <span>Selected Skills: </span>
+                                     {
+                                        userSelectedSkills?.map((item) => (
+                                            <div key={item} className="flex items-center gap-1">
+                                                <Delete onClick={() => {
+                                                    const filtered = userSelectedSkills.filter(i => i !== item);
+                                                    setUserSelectedSkills(filtered);
+                                                }} className='text-red-500' />
+                                                <span>{item}</span>
+                                            </div>
+                                        ) )
+                                    }
+                               </div>}
                             <motion.button
                                 variants={searchInputVariants}
                                 whileHover={{ scale: 1.02 }}
@@ -462,19 +532,32 @@ const Header = () => {
                             </motion.button>
                             <Toggle />
                         </div>
+                        
                          {isauthenticated && 
                          
                          <div className='flex justify-center items-center gap-2'>
-                            {user.role === "Candidate"  && !isSearchOpen && 
+                            <div className="flex gap-6 mr-5">
+                                <span onClick={() => {
+                                    if (user.role === "Candidate") {
+                                        navigate.push("/dashboard/candidate");
+                                    } else {
+                                        navigate.push("/dashboard/recruiter");
+                                    }
+                                }} className="flex gap-1 items-center text-black dark:text-white cursor-pointer"><TrendingUp /> Dashboard</span>
+                                <span className='flex gap-1 items-center text-black dark:text-white cursor-pointer' onClick={() => setIsChatOpen(true)}><MessageCircle size={18}/> Messages</span>
+                            </div>
+                            
+                            {!isSearchOpen && 
                                <div>
                                 <button className='rounded-4xl flex justify-between w-60 gap-2 border dark:border-gray-700 p-2 text-gray-400 items-center cursor-pointer' onClick={toggleSearch}>
-                                    <span>Search for jobs</span>
+                                    <span>{user.role === "Candidate" ? "Search for jobs" : "Looking for candidate"}</span>
                                     <div className='bg-blue-600 rounded-full p-1'>
                                      <Search className='text-white' size={18}/>
                                     </div>
                                 </button>
                                </div>
                             }
+
                          {loader ? <div className='w-9 h-9 rounded-full animate-pulse dark:bg-gray-600 bg-gray-300'/> : <img src={user?.profilePic ? user?.profilePic : `https://ui-avatars.com/api/?name=${user?.firstName}&background=4F46E5&color=fff`} className='w-9 h-9 rounded-full cursor-pointer' onClick={() => {
                                 navigate.push("/profile")
                             }}/>}
@@ -507,7 +590,7 @@ const Header = () => {
                         >
                             <div className="dark:bg-transparent p-10 rounded-xl shadow-lg border border-gray-400 dark:border-gray-700">
                                 <div className="flex justify-between items-center mb-4">
-                                    <h3 className="font-semibold text-lg dark:text-white text-black">Find Your Perfect Job</h3>
+                                    <h3 className="font-semibold text-lg dark:text-white text-black">{user.role === "Candidate" ? "Find Your Perfect Job" : "Find a perfect candidate"}</h3>
                                     <motion.button 
                                         onClick={toggleSearch}
                                         whileTap={{ scale: 0.9 }}
@@ -525,7 +608,7 @@ const Header = () => {
                                         <Briefcase size={18} className="text-gray-500 dark:text-gray-400 mr-3" />
                                         <input 
                                             type="text" 
-                                            placeholder="Job title or keyword" 
+                                            placeholder={user.role === "Candidate" ? "Job title or keyword" : "Enter a job role"}
                                             className="w-full bg-transparent border-none outline-none text-black dark:text-white"
                                             onChange={handleJobTitleChange}
                                             value={jobTitle}
@@ -549,13 +632,13 @@ const Header = () => {
                                         variants={searchInputVariants} 
                                         className="flex items-center border-gray-500 dark:bg-transparent rounded-lg px-4 py-3 flex-1 dark:border-gray-500 border"
                                     >
-                                        <MapPin size={18} className="text-gray-500 dark:text-gray-400 mr-3" />
+                                        {user.role === "Candidate" ? <MapPin size={18} className="text-gray-500 dark:text-gray-400 mr-3" /> : <Code size={18} className="text-gray-500 dark:text-gray-400 mr-3" />}
                                         <input 
                                             type="text" 
-                                            placeholder="Location" 
-                                            value={jobLocation}
+                                            placeholder={user.role === "Candidate" ? "Location" : "Enter a Skills"} 
+                                            value={user.role === "Candidate" ? jobLocation : userSkillsQuery}
                                             className="w-full bg-transparent border-none outline-none text-black dark:text-white"
-                                            onChange={handleJobLocationChange}
+                                            onChange={user.role === "Candidate" ? handleJobLocationChange : handleSkillsChange}
                                         />
                                     </motion.div>
 
@@ -566,6 +649,22 @@ const Header = () => {
                                                     <div key={item} className='flex gap-1  cursor-pointer' onClick={() => setJobLocation(item.properties.formatted)}>
                                                         <Search size={20} />
                                                         <span className='line-clamp-1'>{item.properties.formatted}</span>
+                                                    </div>
+                                                ))
+                                            }
+                                        </div>
+                                    }
+                                
+                                   { user.role === "Recruiter" && skillsSuggestions?.suggestions.length > 0 &&
+                                        <div className='flex flex-col backdrop-blur-xl bg-white items-start gap-3 absolute right-52 top-57 rounded-xl p-3 overflow-y-scroll w-[450px]'>
+                                            {
+                                                skillsSuggestions?.suggestions?.map((item: any) => (
+                                                    <div key={item} className='flex gap-1  cursor-pointer' onClick={() => {      
+                                                        setUserSelectedSkills((prev: any) => [...prev, item]);
+                                                         setSkillsSuggestions(null);
+                                                    }}>
+                                                        <Search size={20} />
+                                                        <span className='line-clamp-1'>{item}</span>
                                                     </div>
                                                 ))
                                             }
@@ -582,6 +681,20 @@ const Header = () => {
                                         Search
                                     </motion.button>
                                 </div>
+                               { userSelectedSkills.length > 0 && <div className="flex flex-wrap mt-2 gap-2">
+                                    <span>Selected Skills: </span>
+                                     {
+                                        userSelectedSkills?.map((item) => (
+                                            <div key={item} className="flex items-center gap-1">
+                                                <Delete onClick={() => {
+                                                    const filtered = userSelectedSkills.filter(i => i !== item);
+                                                    setUserSelectedSkills(filtered);
+                                                }} className='text-red-500' />
+                                                <span>{item}</span>
+                                            </div>
+                                        ) )
+                                    }
+                               </div>}
                             </div>
                         </motion.div>
                     )}

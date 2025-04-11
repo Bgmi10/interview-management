@@ -76,7 +76,7 @@ export function LandingPage() {
       {/* How It Works Section */}
       <div className="py-16">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">How It Works</h2>
+          <h2 className="text-3xl font-bold text-center mb-12 dark:text-gray-300 text-black">How It Works</h2>
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="md:w-1/2 mb-8 md:mb-0 md:pr-8">
               <img src="https://media.istockphoto.com/id/2148703154/photo/business-persons-on-meeting-in-the-office.webp?a=1&b=1&s=612x612&w=0&k=20&c=fVLJpgh_1qG4fB1jxhaGYPXJVK54UMky1wmaIngjqF0=" alt="Platform screenshot" className="rounded-lg shadow-lg" />
@@ -111,7 +111,7 @@ export function LandingPage() {
       {/* User Types Section */}
       <div className="py-16 bg-gray-50 dark:bg-black">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12 text-black dark:text-white">For Every Role in the Hiring Process</h2>
+          <h2 className="text-3xl font-bold text-center mb-12 text-black dark:text-gray-300">For Every Role in the Hiring Process</h2>
           <div className="grid gap-8">
             <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
               <h3 className="text-xl font-semibold mb-4 text-center text-black dark:text-blue-500">For Candidates</h3>
