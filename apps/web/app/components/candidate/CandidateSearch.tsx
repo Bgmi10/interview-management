@@ -141,7 +141,7 @@ export default function CandidateSearch() {
           </div>
         </motion.div>
 
-        {searchResults.length > 0 && <motion.div 
+        {searchResults?.length > 0 && <motion.div 
           className="mb-6 p-4 bg-gray-50 dark:bg-black rounded-xl shadow-sm border border-gray-200 dark:border-gray-700"
           variants={itemVariants}
         >

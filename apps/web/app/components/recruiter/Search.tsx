@@ -1,16 +1,20 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { fetchCandidates } from "../../dashboard/recruiter/recruiterapi";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { User, MapPin, Calendar, Briefcase, ArrowLeft, Search, Loader, Award } from "lucide-react";
+import { MapPin, Calendar, Briefcase, ArrowLeft, Search, Loader, Award } from "lucide-react";
 import { ToastContainer, toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import { User } from "../../types/user";
+import { ThemeContext } from "../../../context/ThemeContext";
+import ChatWidget from "../chat/ChatWidget";
 
 export default function RecruiterSearch() {
-  const [searchParams, setSearchParams] = useState({ jobRole: null, skills: null });
-  const [candidates, setCandidates] = useState([]);
+  const [searchParams, setSearchParams] = useState<{ jobRole: null | string , skills: string |null}>({ jobRole: null, skills: null });
+  const [candidates, setCandidates] = useState<User>([]);
   const [loading, setLoading] = useState(true);
+  const { setIsChatOpen, setSelectedCandidate } = useContext(ThemeContext);
   const router = useRouter();
   const [filters, setFilters] = useState({
     industry: "",
@@ -139,7 +143,7 @@ export default function RecruiterSearch() {
           </div>
         </motion.div>
 
-        {candidates.length > 0 && <motion.div 
+        {candidates?.length > 0 && <motion.div 
           className="mb-6 p-4 bg-gray-50 dark:bg-black rounded-xl shadow-sm border border-gray-200 dark:border-gray-700"
           variants={itemVariants}
         >
@@ -299,8 +303,8 @@ export default function RecruiterSearch() {
                     <button 
                       className="w-full px-4 py-2 bg-white dark:bg-black border border-blue-600 dark:border-blue-500 text-blue-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950 rounded-lg font-medium transition-colors"
                       onClick={() => {
-                        // Placeholder for contact action
-                        toast.info("Contact feature coming soon!");
+                        setSelectedCandidate(candidate);
+                        setIsChatOpen(true);
                       }}
                     >
                       Message
@@ -330,6 +334,7 @@ export default function RecruiterSearch() {
           </motion.div>
         )}
       </motion.div>
+      <ChatWidget />
     </div>
   );
 }

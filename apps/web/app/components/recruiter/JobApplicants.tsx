@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "../../../context/AuthContext";
 import { updateApplicantStatus } from "../../dashboard/candidate/candidateapi";
@@ -31,6 +31,8 @@ import {
   Send
 } from "lucide-react";
 import Link from "next/link";
+import { ThemeContext } from "../../../context/ThemeContext";
+import ChatWidget from "../chat/ChatWidget";
 
 // Animation variants
 const containerVariants = {
@@ -73,8 +75,7 @@ export default function JobApplicants() {
   const [expandedApplicant, setExpandedApplicant] = useState<any>(null);
   const [statusUpdating, setStatusUpdating] = useState<any>({});
   const [error, setError] = useState<string | null>(null);
-
-  console.log(params)
+  const { setIsChatOpen, setSelectedCandidate } = useContext(ThemeContext);
 
   useEffect(() => {
     const fetchData = () => {
@@ -723,9 +724,13 @@ export default function JobApplicants() {
                               
                               <button
                                 className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center gap-1"
+                                onClick={() => {
+                                  setIsChatOpen(true);
+                                  setSelectedCandidate(applicant.candidate);
+                                }}
                               >
                                 <Send size={14} />
-                                Contact
+                                Message
                               </button>
                               {applicant.candidate.resume && (
                                 <button
@@ -765,6 +770,7 @@ export default function JobApplicants() {
           </div>
         </motion.div>
       </motion.div>
+      <ChatWidget />
     </div>
   );
 }

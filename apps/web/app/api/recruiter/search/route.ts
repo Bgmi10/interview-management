@@ -24,6 +24,7 @@ export async function POST(req: Request, res: Response) {
         experience: true,
         specilization: true,
         industry: true,
+        role: true
       }
     });
 

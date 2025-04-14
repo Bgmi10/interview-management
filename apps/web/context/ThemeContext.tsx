@@ -7,6 +7,8 @@ type ThemeContextType = {
   toggleTheme: () => void;
   isChatOpen: boolean;
   setIsChatOpen: (value: boolean) => void;
+  setSelectedCandidate: (value: any) => any,
+  selectedCandidate: any
 };
 
 // Create the context with a default placeholder
@@ -15,6 +17,8 @@ export const ThemeContext = createContext<ThemeContextType>({
   toggleTheme: () => {},
   isChatOpen: false,
   setIsChatOpen: () => {},
+  setSelectedCandidate: () => {},
+  selectedCandidate: null
 });
 
 // Define the props type for ThemeProvider
@@ -27,7 +31,7 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
     const storedTheme = localStorage.getItem("theme");
     return storedTheme ? storedTheme : "light";
   });
-
+  const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
 
   const toggleTheme = () => {
@@ -46,7 +50,7 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
 
   return (
     <ThemeContext.Provider
-      value={{ theme, toggleTheme, isChatOpen, setIsChatOpen }}
+      value={{ theme, toggleTheme, isChatOpen, setIsChatOpen, setSelectedCandidate, selectedCandidate }}
     >
       {children}
     </ThemeContext.Provider>

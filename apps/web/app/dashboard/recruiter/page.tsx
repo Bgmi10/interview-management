@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Plus, Briefcase, Loader } from "lucide-react";
 import { useAuth } from "../../../context/AuthContext";
+import ChatWidget from "../../components/chat/ChatWidget";
 
 export default function RecruiterDashboard() {
   const { user, loader } = useAuth();
@@ -154,6 +155,7 @@ export default function RecruiterDashboard() {
         {/* Job Listings */}
         <JobList />
       </motion.div>
+      <ChatWidget />
     </div>
   );
 }

@@ -35,6 +35,7 @@ export async function GET(req: Request) {
                         where: { email: user.email },
                         select: {
                             ...commonFields,
+                            id: true,
                             resume: true,
                             portfolioUrl: true,
                             collageName: true,
@@ -82,6 +83,7 @@ export async function GET(req: Request) {
                                         include: {
                                             candidate: {
                                                 select: {
+                                                    id: true,
                                                     lastName: true,
                                                     firstName: true,
                                                     email: true,
@@ -96,6 +98,7 @@ export async function GET(req: Request) {
                                                     specilization: true,
                                                     updatedAt: true,
                                                     createdAt: true,
+                                                    role: true
                                                 }
                                             },
 
