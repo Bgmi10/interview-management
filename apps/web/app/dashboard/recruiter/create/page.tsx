@@ -1,6 +1,6 @@
 import CreateJob from "../../../components/recruiter/CreateJob";
 
-export default function () {
+export default function Create() {
     return(
        <CreateJob data={{
         title: "",

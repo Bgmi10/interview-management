@@ -3,7 +3,7 @@ import { useParams } from "next/navigation";
 import { useAuth } from "../../../../../context/AuthContext";
 import CreateJob from "../../../../components/recruiter/CreateJob";
 
-export default function () {
+export default function Edit() {
     const params = useParams();
     const { user } = useAuth();
     //@ts-ignore

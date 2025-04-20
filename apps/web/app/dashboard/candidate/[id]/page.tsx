@@ -4,7 +4,7 @@ import { useParams } from "next/navigation";
 import { useEffect } from "react";
 import { applyjob } from "../candidateapi";
 
-export default function () {
+export default function CandidateById() {
    
     const params = useParams();
     

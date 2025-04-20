@@ -3,6 +3,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { MapPin, Briefcase, Clock, ChevronRight, IndianRupee } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function ApplicationCard({ application }: { application: any }) {
   const router = useRouter();
@@ -59,7 +60,7 @@ export default function ApplicationCard({ application }: { application: any }) {
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-lg bg-purple-100 dark:bg-purple-900 flex items-center justify-center">
             {job?.companyLogo && isValidImageUrl(job.companyLogo) ? (
-              <img
+              <Image
                 src={job.companyLogo}
                 alt={job.companyName}
                 className="w-full h-full object-contain rounded-lg"

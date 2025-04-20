@@ -9,6 +9,7 @@ import { FaSearchengin } from "react-icons/fa6";
 import ResumeUpload from "./ResumeUpload";
 import { useRouter } from "next/navigation";
 import { uploadToS3 } from "../../../src/utils/s3";
+import Image from "next/image";
 
 enum IndustryEnum {
   IT = "IT",
@@ -42,7 +43,7 @@ export default function Setup() {
 
         return () => clearTimeout(timer);
        
-    }, [userCollageQuery]);
+    }, [userCollageQuery, fetchCollageName]);
 
     const [form, setForm] = useState({ 
         profilePicture: {
@@ -186,7 +187,7 @@ export default function Setup() {
             </label>
             <div className="relative w-24 h-24">
               <MdEdit className="dark:text-white text-gray-800 top-14 absolute left-20 lg:text-3xl" />
-                <img 
+                <Image 
                     src={ form.profilePicture.localUrl ? form.profilePicture.localUrl : `https://ui-avatars.com/api/?name=${user?.firstName}&background=4F46E5&color=fff`} 
                     alt="Profile" 
                     className="w-full h-full rounded-full border border-gray-300 dark:border-gray-600 object-cover"
@@ -361,7 +362,7 @@ export default function Setup() {
                               {
                                 collageResponse?.map((collage: any, idx) => (
                                     <div key={idx} className="flex m-2 mb-4 gap-5 items-center cursor-pointer hover:border-b border-gray-600" onClick={() => setForm(p => ({...p, collage: collage.name}))}>
-                                        <img src={collage.logoUrl} alt="collage logo" className="w-7 h-7 rounded-full"/>
+                                        <Image src={collage.logoUrl} alt="collage logo" className="w-7 h-7 rounded-full"/>
                                         <span className="dark:text-white text-gray-800 font-bold text-sm">{collage.name}<span className="dark:text-gray-300 text-gray-500 ml-2">({collage.type})</span></span> 
                                     </div>
                                 ))
@@ -390,7 +391,7 @@ export default function Setup() {
             </label>
             <div className="relative w-24 h-24">
               <MdEdit className="dark:text-white text-gray-800 top-14 absolute left-20 lg:text-3xl" />
-                <img 
+                <Image 
                     src={ form.profilePicture.localUrl ? form.profilePicture.localUrl : `https://ui-avatars.com/api/?name=${user?.firstName}&background=4F46E5&color=fff`} 
                     alt="Profile" 
                     className="w-full h-full rounded-full border border-gray-300 dark:border-gray-600 object-cover"

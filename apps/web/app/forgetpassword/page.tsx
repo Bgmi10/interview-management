@@ -1,6 +1,6 @@
 import ForgetPassword from "../components/auth/ForgetPassword";
 
-export default function () {
+export default function ForgetPasswordPage() {
     return(
       <>
         <ForgetPassword />

@@ -16,6 +16,7 @@ import {
   query,
   getDocs
 } from "firebase/firestore";
+import Image from "next/image";
 
 interface Message {
   id: string,
@@ -253,7 +254,7 @@ export default function ChatWidget() {
                       className="flex items-center p-3 border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
                       onClick={() => selectChat(chat.id)}
                     >
-                      <img 
+                      <Image 
                         src={otherParticipant?.profilePic || "/default-avatar.png"} 
                         className="h-10 w-10 rounded-full object-cover"
                         alt={`${otherParticipant?.firstName || 'User'}'s avatar`}
@@ -281,7 +282,7 @@ export default function ChatWidget() {
               {/* Conversation Header */}
               {selectedCandidate && (
                 <div className="flex gap-2 p-2 items-center bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-white">
-                  <img 
+                  <Image 
                     src={selectedCandidate.profilePic || "/default-avatar.png"} 
                     className="h-10 w-10 rounded-full object-cover"
                     alt={`${selectedCandidate.firstName}'s avatar`}
@@ -307,7 +308,7 @@ export default function ChatWidget() {
               {/* New Chat Profile View */}
               {newCandidateChat && selectedCandidate && (
                 <div className="flex flex-col items-center p-4 bg-white dark:bg-gray-800">
-                  <img 
+                  <Image 
                     src={selectedCandidate?.profilePic || "/default-avatar.png"} 
                     className="h-20 w-20 rounded-full object-cover mb-2"
                     alt={`${selectedCandidate?.firstName}'s avatar`}
@@ -356,7 +357,7 @@ export default function ChatWidget() {
                           className={`flex mb-2 items-end ${isCurrentUser ? "justify-end" : "justify-start"}`}
                         >
                           {!isCurrentUser && (
-                            <img 
+                            <Image 
                               src={selectedCandidate?.profilePic || "/default-avatar.png"}
                               className="h-6 w-6 rounded-full mr-1"
                               alt="Avatar"
@@ -372,7 +373,7 @@ export default function ChatWidget() {
                             >
                               {msg.imageUrl && (
                                 <div className="mb-2">
-                                  <img 
+                                  <Image 
                                     src={msg.imageUrl} 
                                     alt="Shared image" 
                                     className="rounded-md max-w-full max-h-32 object-contain"
@@ -397,7 +398,7 @@ export default function ChatWidget() {
               {imagePreviewUrl && (
                 <div className="px-2 pb-2 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
                   <div className="relative inline-block mt-2">
-                    <img 
+                    <Image 
                       src={imagePreviewUrl} 
                       alt="Selected image" 
                       className="h-16 w-auto rounded object-cover"

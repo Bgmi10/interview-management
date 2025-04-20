@@ -24,6 +24,7 @@ import Link from "next/link";
 import { JobPost } from "../../types/job";
 import { useAuth } from "../../../context/AuthContext";
 import { applyjob } from "../../dashboard/candidate/candidateapi";
+import Image from "next/image";
 
 export default function JobDetail() {
   const [job, setJob] = useState<JobPost | null>(null);
@@ -174,7 +175,7 @@ export default function JobDetail() {
           <div className="p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
             <div className="flex items-center gap-4">
               {job.companyLogo ? (
-                <img src={job.companyLogo} alt={job.companyName} className="w-16 h-16 object-cover rounded-lg bg-white p-2" />
+                <Image src={job.companyLogo} alt={job.companyName} className="w-16 h-16 object-cover rounded-lg bg-white p-2" />
               ) : (
                 <div className="w-16 h-16 flex items-center justify-center bg-white rounded-lg">
                   <Building size={32} className="text-blue-600" />

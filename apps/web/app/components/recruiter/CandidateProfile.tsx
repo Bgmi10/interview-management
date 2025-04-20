@@ -19,6 +19,7 @@ import { motion } from "framer-motion"
 import { useAuth } from "../../../context/AuthContext"
 import { logview } from "../../lib/commonapi"
 import { User } from "../../types/user"
+import Image from "next/image"
 
 export default function CandidateProfile() {
   const params = useParams()
@@ -46,7 +47,7 @@ export default function CandidateProfile() {
     if (user) {
       logview({ viewedId: Number(params.applicantId), viewerId: user?.id }).then(data => console.log(data)).catch(e => console.log(e))
     }
-  }, [user])
+  }, [user, params.applicantId])
 
   // Animation variants
   const containerVariants = {
@@ -114,7 +115,7 @@ export default function CandidateProfile() {
           <div className="flex flex-col md:flex-row items-center gap-6 z-10 relative">
             {/* Profile Picture */}
             <div className="w-28 h-28 rounded-full border-4 border-white overflow-hidden bg-gray-200 dark:bg-gray-700">
-              <img
+              <Image
                 src={candidate.profilePic || `https://ui-avatars.com/api/?name=${candidate.firstName}&background=4F46E5&color=fff`}
                 alt={candidate.firstName}
                 className="w-full h-full object-cover"

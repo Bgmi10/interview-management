@@ -1,6 +1,6 @@
 import Setup from "../components/setup/Setup";
 
-export  default function () {
+export  default function setupPage() {
     return(
         <Setup />
     )

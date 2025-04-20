@@ -25,6 +25,7 @@ import {
 import { uploadToS3 } from "../../../src/utils/s3"
 import axios from "axios"
 import { User } from "../../types/user"
+import Image from "next/image"
 
 export default function Profile() {
     //@ts-ignore
@@ -65,9 +66,8 @@ export default function Profile() {
   const [notification, setNotification] = useState({ show: false, message: "", type: "" })
    
   useEffect(() => {
-      setFormData({ ...formData, ...user })
-  }, [user])
-    console.log(formData)
+    setFormData({ ...formData, ...user })
+  }, [user, formData])
 
   const handleProfilePicUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     try {
@@ -305,7 +305,7 @@ export default function Profile() {
             {/* Profile Picture */}
             <div className="relative group">
               <div className="w-28 h-28 rounded-full border-4 border-white overflow-hidden bg-gray-200 dark:bg-gray-700">
-                <img
+                <Image
                   src={
                     formData.profilePic ||
                     `https://ui-avatars.com/api/?name=${user?.firstName}&background=4F46E5&color=fff`
@@ -726,7 +726,7 @@ export default function Profile() {
                       <div className="flex items-center gap-4 mb-4">
                         <div className="w-16 h-16 rounded-lg border border-gray-200 dark:border-gray-700 flex items-center justify-center bg-white dark:bg-gray-900 overflow-hidden">
                           {user?.companyLogo ? (
-                            <img
+                            <Image
                               src={user?.companyLogo || "/placeholder.svg"}
                               alt={user?.companyName}
                               className="w-full h-full object-contain"

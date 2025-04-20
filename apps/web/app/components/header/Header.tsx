@@ -1,5 +1,5 @@
 "use client";
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image'; 
 import { GoCodescan } from "react-icons/go";
@@ -68,7 +68,9 @@ const Header = () => {
     const pathname = usePathname();
     
     useEffect(() => {
-     setThemePreference(localStorage.getItem("theme") as string);
+        if (typeof window !== "undefined") {
+            setThemePreference(localStorage.getItem("theme") as string);
+        }
     }, []);
 
     const toggleMenu = () => {
@@ -146,27 +148,27 @@ const Header = () => {
     const handleSearch = () => {
        setIsSearchOpen(false);
        if (user.role === "Candidate") {
-         window.location.href = (`/dashboard/candidate/search?jobtitle=${jobTitle}&joblocation=${jobLocation}`);
+        if (typeof window !== "undefined") {
+         window.location.href = (`/dashboard/candidate/search?jobtitle=${jobTitle}&joblocation=${jobLocation}`)};
        } else {
-        window.location.href = (`/dashboard/recruiter/search?jobrole=${jobTitle}&skills=${userSelectedSkills}`);
+        if (typeof window !== "undefined") {
+        window.location.href = (`/dashboard/recruiter/search?jobrole=${jobTitle}&skills=${userSelectedSkills}`)};
        }
     }
 
-    const fetchJobtitle = async () => {
-        try{ 
-            const response = await fetch("/api/job-title-suggestion", {
-                method: "POST",
-                body: JSON.stringify({
-                    query: jobTitle
-                })
-            });
-            const json = await response.json();
-            setJobTitleResults(json);
+    const fetchJobtitle = useCallback(async () => {
+        try {
+          const response = await fetch("/api/job-title-suggestion", {
+            method: "POST",
+            body: JSON.stringify({ query: jobTitle }),
+          });
+          const json = await response.json();
+          setJobTitleResults(json);
         } catch (e) {
-            console.log(e);
+          console.log(e);
         }
-        
-    }
+      }, [jobTitle]); // 👈 depends only on jobTitle
+      
 
     useEffect(() => {
       const isExist = jobTitleResults?.suggestions?.find((item) => {
@@ -182,7 +184,7 @@ const Header = () => {
       }, 500)
 
       return () => clearTimeout(timeOut);
-    }, [jobTitle]);
+    }, [jobTitle, fetchJobtitle, jobTitleResults?.suggestions]);
 
     const handleJobTitleChange = (e: any) => {
       setJobTitle(e.target.value);
@@ -192,11 +194,12 @@ const Header = () => {
         setJobLocation(e.target.value);
     }
 
-    async function fetchLocation() {
+    const fetchLocation = useCallback(async () => {
         const response = await fetch(`https://api.geoapify.com/v1/geocode/autocomplete?text=${jobLocation}&apiKey=464ed0df1c0342c6a959b07bdcad59a5`);
         const json = await response.json();
         setJobQueryResults(json);
-    }
+      }, [jobLocation]);
+      
 
     useEffect(() => {
         if (jobLocation === "") {
@@ -218,27 +221,26 @@ const Header = () => {
       }, 500);
 
       return () => clearTimeout(timeout);
-    }, [jobLocation]);
+    }, [jobLocation, fetchLocation, jobQueryResults?.features]);
 
     const handleSkillsChange = (e) => {
       setUserSkillsQuery(e.target.value);
     }
 
-    async function fetchSkillsSuggestion () {
-       try {
-        const response = await fetch("/api/skills-suggestions", {
+    const fetchSkillsSuggestion = useCallback(async () => {
+        try {
+          const response = await fetch("/api/skills-suggestions", {
             method: "POST",
-            body: JSON.stringify({
-                query: userSkillsQuery
-            })
-        });
-        const json = await response.json();
-        console.log(json);
-        setSkillsSuggestions(json);
-       } catch (e) {
-        console.log(e);
-       }
-    }
+            body: JSON.stringify({ query: userSkillsQuery }),
+          });
+          const json = await response.json();
+          console.log(json);
+          setSkillsSuggestions(json);
+        } catch (e) {
+          console.log(e);
+        }
+      }, [userSkillsQuery]);
+      
 
     useEffect(() => {
         if (!userSkillsQuery) {
@@ -249,12 +251,12 @@ const Header = () => {
         }, 400);
 
         return () => clearTimeout(timer);
-    }, [userSkillsQuery]);
+    }, [userSkillsQuery, fetchSkillsSuggestion]);
 
 
     return (
         <header className="mt-[-40px] p-5 text-center">
-            {window.location.pathname === "/" && <FloatIcons />}
+            { typeof window !== "undefined" &&  window.location.pathname === "/" && <FloatIcons />}
             <div className={`top-4 left-3 right-3 z-40 md:hidden fixed flex ${!isauthenticated ? "justify-center" : "justify-between"} backdrop-blur-md border-gray-800 border p-2 rounded-xl bg-secondary/30`}>
                 {isauthenticated && <motion.button 
                     onClick={toggleMenu} 
@@ -420,7 +422,7 @@ const Header = () => {
                             >
                                 <div className="relative">
                                     <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-primary">
-                                        <img 
+                                        <Image 
                                             src={user?.profilePic ? user?.profilePic : `https://ui-avatars.com/api/?name=${user?.firstName}&background=4F46E5&color=fff`} 
                                             className="w-full h-full object-cover"
                                             alt={user?.firstName || "User"}
@@ -558,7 +560,7 @@ const Header = () => {
                                </div>
                             }
 
-                         {loader ? <div className='w-9 h-9 rounded-full animate-pulse dark:bg-gray-600 bg-gray-300'/> : <img src={user?.profilePic ? user?.profilePic : `https://ui-avatars.com/api/?name=${user?.firstName}&background=4F46E5&color=fff`} className='w-9 h-9 rounded-full cursor-pointer' onClick={() => {
+                         {loader ? <div className='w-9 h-9 rounded-full animate-pulse dark:bg-gray-600 bg-gray-300'/> : <Image src={user?.profilePic ? user?.profilePic : `https://ui-avatars.com/api/?name=${user?.firstName}&background=4F46E5&color=fff`} className='w-9 h-9 rounded-full cursor-pointer'  alt="user" onClick={() => {
                                 navigate.push("/profile")
                             }}/>}
                             

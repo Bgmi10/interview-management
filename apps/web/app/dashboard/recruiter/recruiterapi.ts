@@ -1,4 +1,6 @@
-const BASE_URL = "http://localhost:3000/api/recruiter"; 
+import { baseUrl } from "@/utils/constants";
+
+const BASE_URL = `${baseUrl}/api/recruiter`; 
  
 // ✅ Fetch all jobs    
 export const fetchJobs = async () => {

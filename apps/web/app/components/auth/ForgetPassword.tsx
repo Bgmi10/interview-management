@@ -30,7 +30,7 @@ export default function ForgetPassword() {
       const timer = setTimeout(() => {
         setTimeRemaining(timeRemaining - 1)
       }, 1000)
-      return () => clearTimeout(timer)
+      return () => clearTimeout(timer)  
     } else if (isShowOtpForm) {
       setIsShowOtpForm(false)
       localStorage.removeItem("otpEndTime")
@@ -89,7 +89,11 @@ export default function ForgetPassword() {
       {!isShowOtpForm ? (
         <form onSubmit={handleSubmit} className="border border-gray-600 flex flex-col p-10 rounded-2xl gap-3 w-96">
           <div className="flex items-center mb-4">
-            <FaArrowLeft className="text-gray-400 cursor-pointer" onClick={() => window.history.back()} />
+            <FaArrowLeft className="text-gray-400 cursor-pointer" onClick={() =>{
+               if (typeof window !== "undefined") {
+                window.history.back();
+              }
+              }} />
             <h2 className="text-2xl font-bold text-center flex-grow dark:text-gray-200 text-gray-900">Forgot Password</h2>
           </div>
           <input

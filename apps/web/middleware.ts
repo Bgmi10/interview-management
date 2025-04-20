@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
-//@ts-ignore
-import cookie from "cookie";
+import * as cookie from 'cookie';
+
 
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;

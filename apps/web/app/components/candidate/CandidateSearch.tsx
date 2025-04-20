@@ -7,6 +7,7 @@ import { Briefcase, MapPin, Calendar, Clock, ArrowLeft, Search, Loader, IndianRu
 import { ToastContainer, toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { JobPost } from "../../types/job";
+import Image from "next/image";
 
 export default function CandidateSearch() {
   const [job, setJob] = useState({ title: null, location: null });
@@ -223,7 +224,7 @@ export default function CandidateSearch() {
                 <div className="flex flex-col md:flex-row md:items-center gap-4">
                   <div className="flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900/30">
                     {job.companyLogo ? (
-                      <img src={job.companyLogo} alt={job.companyName} className="w-8 h-8 object-contain" />
+                      <Image src={job.companyLogo} alt={job.companyName} className="w-8 h-8 object-contain" />
                     ) : (
                       <Briefcase className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                     )}

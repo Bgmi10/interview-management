@@ -33,6 +33,7 @@ import {
 import Link from "next/link";
 import { ThemeContext } from "../../../context/ThemeContext";
 import ChatWidget from "../chat/ChatWidget";
+import Image from "next/image";
 
 // Animation variants
 const containerVariants = {
@@ -272,7 +273,7 @@ export default function JobApplicants() {
             <div className="p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
               <div className="flex items-center gap-4">
                 {jobData.companyLogo ? (
-                  <img src={jobData.companyLogo} alt={jobData.companyName} className="w-12 h-12 object-cover rounded-lg bg-white p-2" />
+                  <Image src={jobData.companyLogo} alt={jobData.companyName} className="w-12 h-12 object-cover rounded-lg bg-white p-2" />
                 ) : (
                   <div className="w-12 h-12 flex items-center justify-center bg-white rounded-lg">
                     <Building size={24} className="text-blue-600" />
@@ -349,7 +350,7 @@ export default function JobApplicants() {
           <div className="p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
             <div className="flex items-center gap-4">
               {jobData.companyLogo ? (
-                <img src={jobData.companyLogo} alt={jobData.companyName} className="w-12 h-12 object-cover rounded-lg bg-white p-2" />
+                <Image src={jobData.companyLogo} alt={jobData.companyName} className="w-12 h-12 object-cover rounded-lg bg-white p-2" />
               ) : (
                 <div className="w-12 h-12 flex items-center justify-center bg-white rounded-lg">
                   <Building size={24} className="text-blue-600" />
@@ -412,7 +413,7 @@ export default function JobApplicants() {
                     
                     {/* Profile pic and name */}
                     <div className="col-span-7 md:col-span-5 flex items-center gap-3">
-                      <img 
+                      <Image 
                         src={applicant.candidate.profilePic || `https://ui-avatars.com/api/?name=${applicant.candidate.firstName}&background=4F46E5&color=fff`} 
                         alt={applicant.candidate.firstName} 
                         className="lg:w-12 lg:h-12 sm: w-8 sm: h-8 rounded-full object-cover border-2 border-gray-200 dark:border-gray-700"
@@ -739,16 +740,19 @@ export default function JobApplicants() {
                                     try {
                                       const response = await fetch(applicant.candidate.resume);
                                       const blob = await response.blob();
-                                      const url = window.URL.createObjectURL(blob);
-                                      
+                                      if (typeof window !== "undefined") {
+                                        const url = window.URL.createObjectURL(blob);
+                                     }
+                                       
                                       const a = document.createElement("a");
                                       a.href = url;
                                       a.download = "resume.pdf"; // Custom filename
                                       document.body.appendChild(a);
                                       a.click();
                                       document.body.removeChild(a);
-                                      
-                                      window.URL.revokeObjectURL(url);
+                                      if (typeof window !== "undefined") {
+                                        window.URL.revokeObjectURL(url);
+                                      }
                                     } catch (error) {
                                       console.error("Error downloading the file:", error);
                                     }

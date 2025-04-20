@@ -2,6 +2,7 @@
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { FlipWords } from "@/components/ui/flip-words";
+import Image from "next/image";
 
 export function LandingPage() {
   return (
@@ -26,10 +27,17 @@ export function LandingPage() {
           Our platform leverages advanced algorithms to analyze and match candidate expertise with the interview board's subject matter.
         </p>
         <div className="flex gap-4 mt-10">
-          <button className="cursor-pointer px-6 py-2 bg-transparent border border-gray-600 dark:border-gray-600 dark:text-white text-black rounded-lg font-bold transform hover:-translate-y-1 transition duration-400 group flex justify-center items-center gap-2 group-hover:before:duration-500 group-hover:after:duration-500 after:duration-500 relative text-left p-3 text-base overflow-hidden after:absolute after:z-10 after:w-12 after:h-12 after:content[''] dark:after:bg-sky-900 after:bg-sky-500 after:-left-8 after:top-8 after:rounded-full after:blur-lg hover:after:animate-pulse" onClick={() => window.location.href = "/signup"}>
+          <button className="cursor-pointer px-6 py-2 bg-transparent border border-gray-600 dark:border-gray-600 dark:text-white text-black rounded-lg font-bold transform hover:-translate-y-1 transition duration-400 group flex justify-center items-center gap-2 group-hover:before:duration-500 group-hover:after:duration-500 after:duration-500 relative text-left p-3 text-base overflow-hidden after:absolute after:z-10 after:w-12 after:h-12 after:content[''] dark:after:bg-sky-900 after:bg-sky-500 after:-left-8 after:top-8 after:rounded-full after:blur-lg hover:after:animate-pulse" onClick={() =>{
+            if (typeof window !== "undefined") {
+              window.location.href = "/signup"
+            }
+           }}>
             Try It Now
           </button>
-          <button className="px-6 py-2 cursor-pointer bg-transparent border border-black dark:border-gray-600 dark:text-white text-black rounded-lg font-bold transform hover:-translate-y-1 transition duration-400 group-hover:before:duration-500 group-hover:after:duration-500 after:duration-500 relative text-left p-3 text-base overflow-hidden after:absolute after:z-10 after:w-12 after:h-12 after:content[''] after:bg-gray-700 after:left-44 after:top-8 after:rounded-full after:blur-lg hover:after:animate-pulse" onClick={() => window.location.href = "/signup"}>
+          <button className="px-6 py-2 cursor-pointer bg-transparent border border-black dark:border-gray-600 dark:text-white text-black rounded-lg font-bold transform hover:-translate-y-1 transition duration-400 group-hover:before:duration-500 group-hover:after:duration-500 after:duration-500 relative text-left p-3 text-base overflow-hidden after:absolute after:z-10 after:w-12 after:h-12 after:content[''] after:bg-gray-700 after:left-44 after:top-8 after:rounded-full after:blur-lg hover:after:animate-pulse" onClick={() =>  {
+            if (typeof window !== "undefined") {
+              window.location.href = "/signup"
+            }}}>
             Learn How It Works
           </button>
         </div>
@@ -79,7 +87,7 @@ export function LandingPage() {
           <h2 className="text-3xl font-bold text-center mb-12 dark:text-gray-300 text-black">How It Works</h2>
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="md:w-1/2 mb-8 md:mb-0 md:pr-8">
-              <img src="https://media.istockphoto.com/id/2148703154/photo/business-persons-on-meeting-in-the-office.webp?a=1&b=1&s=612x612&w=0&k=20&c=fVLJpgh_1qG4fB1jxhaGYPXJVK54UMky1wmaIngjqF0=" alt="Platform screenshot" className="rounded-lg shadow-lg" />
+              <Image src="https://media.istockphoto.com/id/2148703154/photo/business-persons-on-meeting-in-the-office.webp?a=1&b=1&s=612x612&w=0&k=20&c=fVLJpgh_1qG4fB1jxhaGYPXJVK54UMky1wmaIngjqF0=" alt="Platform screenshot" className="rounded-lg shadow-lg" />
             </div>
             <div className="md:w-1/2">
               <div className="flex mb-6">
@@ -169,7 +177,11 @@ export function LandingPage() {
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold text-white mb-6">Ready to Transform Your Hiring Process?</h2>
           <p className="text-blue-100 max-w-2xl mx-auto mb-8">Join companies that are already making smarter hiring decisions with our advanced interview management system.</p>
-          <button className="px-8 py-3 bg-white text-blue-600 font-bold rounded-lg hover:bg-blue-50 transition duration-300" onClick={() => window.location.href = "/signup"}>Get Started Today</button>
+          <button className="px-8 py-3 bg-white text-blue-600 font-bold rounded-lg hover:bg-blue-50 transition duration-300" onClick={() => {
+            if (typeof window !== "undefined") {
+              window.location.href = "/signup"
+            }
+           }}>Get Started Today</button>
         </div>
       </div>
 

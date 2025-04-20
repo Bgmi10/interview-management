@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { User } from "../../types/user";
 import { ThemeContext } from "../../../context/ThemeContext";
 import ChatWidget from "../chat/ChatWidget";
+import Image from "next/image";
 
 export default function RecruiterSearch() {
   const [searchParams, setSearchParams] = useState<{ jobRole: null | string , skills: string |null}>({ jobRole: null, skills: null });
@@ -212,7 +213,7 @@ export default function RecruiterSearch() {
               >
                 <div className="flex flex-col md:flex-row md:items-center gap-4">
                   <div className="flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-lg bg-purple-100 dark:bg-purple-900/30">
-                    <img src={candidate.profilePic} className="h-6 w-6 rounded-full" />
+                    <Image src={candidate.profilePic} className="h-6 w-6 rounded-full" alt="profile" />
                   </div>
                   
                   <div className="flex-grow">

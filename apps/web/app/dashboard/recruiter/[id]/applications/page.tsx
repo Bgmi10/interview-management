@@ -1,6 +1,6 @@
 import JobApplicants from "../../../../components/recruiter/JobApplicants";
 
-export default function () {
+export default function JobApplicantsPage() {
     return (
         <div>
             <JobApplicants />

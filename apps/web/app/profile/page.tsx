@@ -1,6 +1,6 @@
 import Profile from '../components/profile/Profile'
 
-export default function () {
+export default function ProfilePage() {
     return(
         <Profile />
     )
