@@ -20,15 +20,14 @@ COPY --from=deps /app/apps/web/package.json ./apps/web/package.json
 COPY apps/web ./apps/web
 COPY packages/typescript-config ./packages/typescript-config
 COPY packages/db ./packages/db
-COPY packages/db/.env ./packages/db/.env
+COPY packages/db/.env ./packages/db/.env 
+#Build Next.js app
 
-# Generate and migrate the Prisma schema
-WORKDIR /app/packages/db
-RUN npx prisma generate
-# Note: `migrate dev` is not suitable for production. Use `migrate deploy`.
-RUN npx prisma migrate deploy
+COPY start.sh ./start.sh
+RUN chmod +x start.sh
+CMD ["sh", "./start.sh"]
 
-# Build Next.js app
+
 WORKDIR /app/apps/web
 RUN npm run build
 
