@@ -26,7 +26,7 @@ COPY packages/typescript-config ./packages/typescript-config
 COPY packages/db ./packages/db
 
 # Build the web app
-RUN cd packages/db && npx prisma generate
+RUN cd packages/db && npx prisma generate && npx prisma migrate dev
 RUN cd apps/web && npm run build
 
 # Final production image
