@@ -2,36 +2,40 @@
 FROM node:18-alpine AS deps
 WORKDIR /app
 
-# Copy monorepo essentials
 COPY package.json package-lock.json turbo.json ./
-
-# Copy app-specific package.json
 COPY apps/web/package.json ./apps/web/package.json
 
-# Install shared dependencies
+# Install only production dependencies (remove devDeps later)
 RUN npm install --legacy-peer-deps
 
-# Build stage
+# Builder stage
 FROM node:18-alpine AS builder
 WORKDIR /app
 
 COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/package.json ./package.json
-COPY --from=deps /app/turbo.json ./turbo.json
+COPY --from=deps /app/package.json ./
+COPY --from=deps /app/turbo.json ./
 COPY --from=deps /app/apps/web/package.json ./apps/web/package.json
 
-# 👇 Copy your actual code and shared config
 COPY apps/web ./apps/web
 COPY packages/typescript-config ./packages/typescript-config
 COPY packages/db ./packages/db
+COPY packages/db/.env ./packages/db/.env
 
-# Build the web app
-RUN cd packages/db && npx prisma generate && npx prisma migrate dev
-RUN cd apps/web && npm run build
+# Generate and migrate the Prisma schema
+WORKDIR /app/packages/db
+RUN npx prisma generate
+# Note: `migrate dev` is not suitable for production. Use `migrate deploy`.
+RUN npx prisma migrate deploy
 
-# Final production image
+# Build Next.js app
+WORKDIR /app/apps/web
+RUN npm run build
+
+# Final image
 FROM node:18-alpine AS runner
 WORKDIR /app
+
 ENV NODE_ENV=production
 
 COPY --from=builder /app/apps/web/public ./public
